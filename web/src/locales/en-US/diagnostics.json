@@ -1,0 +1,37 @@
+{
+  "title": "Diagnostics",
+  "tab": {
+    "log": "Live log",
+    "events": "Events",
+    "tools": "Tools"
+  },
+  "log": {
+    "pause": "Pause",
+    "resume": "Resume",
+    "clear": "Clear",
+    "level": "Level",
+    "empty": "Waiting for logs…",
+    "rateLimited": "Logs are pushed rate-limited and sampled during bursts."
+  },
+  "events": {
+    "column": {
+      "at": "Time",
+      "level": "Level",
+      "kind": "Kind",
+      "subject": "Subject",
+      "message": "Message",
+      "actor": "Actor"
+    },
+    "empty": "No events yet"
+  },
+  "selftest": {
+    "title": "Self-test",
+    "run": "Run self-test",
+    "running": "Running…"
+  },
+  "bundle": {
+    "title": "Support bundle",
+    "download": "Download support bundle",
+    "note": "Contains redacted config, recent events, version and platform info. No secrets or token plaintext."
+  }
+}

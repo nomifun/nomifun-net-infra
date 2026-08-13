@@ -1,0 +1,192 @@
+{
+  "title": "Tunnels",
+  "count": "Tunnels ({{count}})",
+  "searchPlaceholder": "Search name, public endpoint or target",
+  "filter": {
+    "kind": "Kind",
+    "state": "State",
+    "mode": "Mode",
+    "all": "All"
+  },
+  "column": {
+    "state": "State",
+    "endpoint": "Name / public endpoint → target",
+    "mode": "Mode",
+    "exposure": "Exposure",
+    "sessions": "Sessions",
+    "rtt": "RTT",
+    "traffic": "Traffic in/out",
+    "actions": "Actions"
+  },
+  "row": {
+    "agent": "agent \"{{name}}\"",
+    "relayDials": "relay dials directly",
+    "rttSparkline": "RTT, last 15 minutes",
+    "noData": "no data",
+    "fileManaged": "file-managed",
+    "p95": "p95 {{value}}",
+    "lossPps": "loss {{loss}} · {{pps}} pps"
+  },
+  "empty": {
+    "title": "No tunnels yet",
+    "pickTemplate": "Start from a template"
+  },
+  "template": {
+    "httpApi": {
+      "name": "HTTP + WebSocket API",
+      "detail": "Gateway mode, shares 443, routed by Host"
+    },
+    "udpMedia": {
+      "name": "UDP media (WebRTC + TURN)",
+      "detail": "Unreliable datagrams, latency first"
+    },
+    "fixedPort": {
+      "name": "Fixed port → remote desktop",
+      "detail": "Dedicated entry port, passthrough"
+    },
+    "tcpSsh": {
+      "name": "TCP · SSH",
+      "detail": "Dedicated port + source allow-list"
+    }
+  },
+  "delete": {
+    "title": "Delete tunnel {{slug}}",
+    "warn": "The entry listener closes immediately and in-flight sessions are cut."
+  },
+  "toast": {
+    "enabled": "{{slug}} enabled",
+    "disabled": "{{slug}} disabled",
+    "deleted": "{{slug}} deleted",
+    "created": "{{slug}} created",
+    "updated": "{{slug}} updated"
+  },
+  "wizard": {
+    "title": "New tunnel",
+    "editTitle": "Edit tunnel {{slug}}",
+    "step": {
+      "target": "Target",
+      "protocol": "Protocol",
+      "mode": "Mode",
+      "exposure": "Exposure",
+      "test": "Test"
+    },
+    "target": {
+      "slug": "Name",
+      "slugHint": "Lowercase letters, digits and hyphens; it shows up in URLs and logs",
+      "source": "How is the target reached",
+      "withAgent": "Carried by an agent",
+      "withAgentHint": "Run the agent on the target's machine; the final say over the target address stays with the agent",
+      "withoutAgent": "Relay dials directly (not in v1)",
+      "withoutAgentHint": "v1 has no relay-side dial path — all three data-plane entries require a live agent. A tunnel created this way stays at \"waiting for agent\", or gets bound to whichever agent happens to be online (the opposite of this choice). It is unimplemented because the relay would first need the same target policy the agent enforces; without it that path has no SSRF defence.",
+      "agent": "Agent",
+      "agentPlaceholder": "Pick an online agent",
+      "noAgents": "No agents yet",
+      "addr": "Target address",
+      "addrPlaceholder": "127.0.0.1:8080",
+      "addrHint": "The agent re-checks the resolved address on every dial; cloud metadata addresses are permanently denied"
+    },
+    "protocol": {
+      "l4": "Transport",
+      "udpHint": "UDP rides unreliable datagrams, one-to-one with UDP semantics; one stalled flow never blocks the others",
+      "exposure": "Entry shape",
+      "exposurePort": "Dedicated port",
+      "exposureShared": "Shared port (routed by Host / SNI)",
+      "sharedUdpDisabled": "UDP carries neither SNI nor a Host header, so shared-port routing only makes sense for TCP.",
+      "routerKind": "Routing",
+      "routerAuto": "Derived from the mode: gateway → by Host and path, passthrough → by SNI (SNI is cleartext, reading it needs no decryption).",
+      "listenPort": "Entry port",
+      "listenPortHint": "Leave empty to let the relay allocate",
+      "domains": "Domains",
+      "domainsPlaceholder": "api.example.com",
+      "locations": "Path prefixes",
+      "locationsPlaceholder": "/api",
+      "hostRewrite": "Rewrite Host header",
+      "hostRewriteHint": "Required for nomifun-tauri targets: its host guard 403s any domain-shaped Host"
+    },
+    "mode": {
+      "question": "How should the relay handle TLS?",
+      "recommended": "Recommended",
+      "passthroughTagline": "The relay only moves ciphertext; it never decrypts",
+      "gatewayTagline": "The relay terminates TLS and routes by Host / path",
+      "passthroughPro1": "Private key stays on your server",
+      "passthroughPro2": "End-to-end encryption; zero trust in the relay",
+      "passthroughCon1": "No ACME — certificates are your problem",
+      "passthroughCon2": "One port per tunnel",
+      "passthroughCon3": "No HTTP-layer metrics (status codes / paths / per-request latency)",
+      "passthroughCon4": "Backend cannot see the real client IP; only PROXY protocol can restore it",
+      "gatewayPro1": "Automatic certificates via ACME",
+      "gatewayPro2": "Many tunnels share 443",
+      "gatewayPro3": "Can inject auth / XFF real IP",
+      "gatewayPro4": "Status code / path / per-request latency metrics",
+      "gatewayCon1": "Private key and plaintext pass through the relay",
+      "gatewayCon2": "Still works for ESP32 without SNI (cleartext http/ws)",
+      "disabledHostRewrite": "This template must rewrite the Host header, which passthrough cannot do by definition — it never reads plaintext. Hence unavailable.",
+      "compareTitle": "Side by side",
+      "compareItem": "Item",
+      "compare": {
+        "keyLocation": "TLS private key lives on",
+        "keyLocationPassthrough": "your server",
+        "keyLocationGateway": "the relay",
+        "plaintext": "Relay sees plaintext",
+        "acme": "Automatic certificates (ACME)",
+        "hostRouting": "Host / path routing, many tunnels on 443",
+        "hostRoutingPassthrough": "one port per tunnel",
+        "injectAuth": "Inject auth / rewrite headers",
+        "realIP": "Backend sees the real client IP",
+        "realIPPassthrough": "PROXY protocol only",
+        "realIPGateway": "XFF + PROXY",
+        "httpMetrics": "Status code / path / per-request latency",
+        "esp32": "ESP32 on a bare IP, no SNI",
+        "esp32Gateway": "works (cleartext http/ws)"
+      }
+    },
+    "gatewayOnly": {
+      "reason": "In passthrough the relay never decrypts, so this field has no effect. Switch to gateway to enable it."
+    },
+    "exposureStep": {
+      "title": "Exposure surface",
+      "summary": "{{addr}} · source IP: {{source}} · app-layer auth: {{auth}}",
+      "sourceAny": "any",
+      "sourceList": "{{count}} allow-list entries",
+      "authNone": "none",
+      "authSome": "configured",
+      "allowList": "Source allow-list",
+      "allowListPlaceholder": "203.0.113.0/24",
+      "addAllowList": "Add a source allow-list",
+      "note": "When a device can only take an IP + port, the boundary can only live at the network layer. Once traffic flows, Learn mode can pin the observed sources into an allow-list in one click.",
+      "confirmOpen": "This tunnel is open to any address with no app-layer auth, so confirmation by name is required.",
+      "maxConns": "Max concurrent connections",
+      "bytesPerSecond": "Rate limit (bytes/s)",
+      "packetsPerSecond": "Packet rate limit (pps)",
+      "ppsHint": "Must accompany the byte limit: 100k pps of 64-byte packets is a real attack that a bytes-only limiter waves through",
+      "maxConnsPerIP": "Max per source IP"
+    },
+    "preview": {
+      "title": "Generated config preview",
+      "agent": "Agent config",
+      "relay": "relay.yaml fragment",
+      "hint": "The console teaches, the file commits. The relay never reads console edits back out of the file."
+    },
+    "submit": "Create and test",
+    "submitEdit": "Save",
+    "validating": "Validating…",
+    "validateFailed": "The relay rejected this config",
+    "probe": {
+      "title": "Per-hop probe",
+      "run": "Run test",
+      "fromInternet": "Test from the internet",
+      "fromInternetHint": "Loopback will lie to you: reachable locally is not reachable publicly",
+      "hop": {
+        "listener_bound": "Entry listener bound",
+        "agent_reachable": "Agent reachable",
+        "carrier_rtt": "Carrier RTT",
+        "target_dialable": "Target dialable",
+        "first_byte": "First byte / 101 upgrade"
+      },
+      "example": "Equivalent command",
+      "ok": "End to end OK",
+      "failedAt": "Failed at hop \"{{hop}}\"",
+      "okPartial": "Every hop we could measure passed, but {{count}} hop(s) were not tested (marked \"—\" above) — this does not mean end-to-end works"
+    }
+  }
+}

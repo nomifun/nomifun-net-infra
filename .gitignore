@@ -1,0 +1,38 @@
+# 构建产物
+/dist/
+/build/
+# 必须带前导斜杠：不带斜杠的 `nfrelay` 会匹配**任意路径层级**上的同名项，
+# 把 cmd/nfrelay/ 与 cmd/nfagent/ 两个源码目录整个吞掉（两个可执行程序的
+# 源码因此一直没有进版本库）。这里只忽略根目录下的构建产物。
+/nfrelay
+/nfagent
+*.exe
+
+# 前端
+/web/node_modules/
+/web/dist/
+/web/.vite/
+
+# 运行时数据
+/data/
+*.db
+*.db-wal
+*.db-shm
+initial-admin-password
+
+# 本地配置与证书
+relay.local.toml
+agent.local.toml
+*.pem
+*.key
+!testdata/**/*.pem
+!testdata/**/*.key
+
+# 工具链
+/bin/
+
+# 编辑器
+.DS_Store
+*.swp
+.idea/
+.vscode/

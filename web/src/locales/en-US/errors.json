@@ -1,0 +1,40 @@
+{
+  "generic": "Something went wrong",
+  "network": "Cannot reach the relay. Check that it is running and that the console address is right.",
+  "unauthenticated": "Session expired — please sign in again",
+  "csrf": "Rejected by CSRF protection; refresh and retry",
+  "not_found": "Object not found",
+  "conflict": "Conflicts with an existing object (duplicate name or port already taken)",
+  "token_used": "This join token was already used",
+  "token_expired": "This join token expired",
+  "internal": "Relay internal error — see the log on the diagnostics page",
+  "misdirected": "Host header not allowed (DNS rebinding protection)",
+  "notImplemented": "This endpoint does not exist in the current relay build (the console keeps the entry point per spec)",
+  "contractMismatch": "Console version does not match the relay",
+  "refresh": "Please refresh",
+  "eventKind": {
+    "agent_online": "Agent online",
+    "agent_offline": "Agent offline",
+    "agent_enrolled": "Agent enrolled",
+    "agent_revoked": "Agent revoked",
+    "agent_handshake_failed": "Handshake failed",
+    "tunnel_created": "Tunnel created",
+    "tunnel_updated": "Tunnel updated",
+    "tunnel_deleted": "Tunnel deleted",
+    "tunnel_rejected": "Tunnel rejected by agent",
+    "tunnel_stream_denied": "Target denied by agent policy (at dial time)",
+    "turn_credential_issued": "Ephemeral TURN credential issued",
+    "console_support_bundle": "Support bundle downloaded",
+    "console_login": "Console sign-in",
+    "console_login_failed": "Sign-in failed",
+    "pairing_invite_created": "Desktop pairing invite created",
+    "relay_started": "Relay started",
+    "relay_draining": "Relay draining"
+  },
+  "level": {
+    "info": "Info",
+    "warn": "Warning",
+    "error": "Error",
+    "debug": "Debug"
+  }
+}

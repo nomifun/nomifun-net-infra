@@ -1,0 +1,78 @@
+# NomiRelay 中继的 docker-compose 部署。
+#
+#   docker compose up -d
+#   docker compose logs -f nfrelay     # 首启信息（控制台地址、证书指纹）在这里
+#
+# 控制台默认只绑 127.0.0.1，需要远程访问时**不要**直接改成 0.0.0.0 ——
+# 正确做法是放在一个做了 TLS 与鉴权的反代之后，并把公网主机名加进
+# -console-hosts（那是 DNS 重绑定防护要求的）。
+
+services:
+  nfrelay:
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-dev}
+        COMMIT: ${COMMIT:-none}
+    image: nomifun/nfrelay:${VERSION:-dev}
+    container_name: nfrelay
+    restart: unless-stopped
+
+    # QUIC 承载走 UDP。UDP 在 docker 的用户态代理下延迟明显更差，
+    # 对场景一的实时流量建议改用 network_mode: host。
+    ports:
+      - "8443:8443/udp"     # agent 承载
+      - "127.0.0.1:9443:9443"  # 控制台，只暴露到本机
+      # 业务入口按隧道逐条发布，例如：
+      # - "19090:19090"
+
+    volumes:
+      # SQLite 与证书。证书必须持久化 —— 否则每次重启 SPKI 指纹都变，
+      # 所有 agent 都要重配，等于把整个机队踢下线。
+      - relay-data:/data
+
+    command:
+      - -data-dir=/data
+      - -bind=0.0.0.0:8443
+      - -console=0.0.0.0:9443
+      - -log-level=info
+      # 经反代访问控制台时，把公网主机名加进来：
+      # - -console-hosts=relay.example.com
+      # 反代做了 TLS 终止时再加这一条，会话 Cookie 才会带 Secure 与 __Host- 前缀。
+      # **不要**在没有 TLS 的情况下加它：浏览器会因此不保存 Cookie，
+      # 现象是「登录返回 200、下一个请求 401」。
+      # - -console-behind-tls-proxy
+
+    # Docker 默认只给 10 秒就 SIGKILL，而 -drain 默认 30 秒 ——
+    # 不设这一项的话停机日志会被截断、relay.draining 事件可能没写进库。
+    # 设成比 -drain 略长。
+    stop_grace_period: 40s
+
+    healthcheck:
+      # **这条只证明「二进制能执行」，不证明服务健康。**
+      #
+      # 镜像是 distroless（没有 shell、没有 curl、没有 wget），所以容器内
+      # 没有任何 HTTP 客户端可用 —— 只能退化成跑一次 `-version`。
+      #
+      # 后果要说清：控制台 500、数据库锁死、所有入口都没绑上时，这个
+      # healthcheck 照样 healthy。真正的健康检查是 GET /healthz，
+      # 但它要从**容器外**探（k8s httpGet、或宿主机上的探针）。
+      #
+      # 顺带：/healthz 刻意在 Host 白名单闸门**之外**，正是为了让
+      # k8s httpGet（默认拿 Pod IP 当 Host）能用。
+      test: ["CMD", "/nfrelay", "-version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+    # 与 Dockerfile 的 distroless/nonroot 一致，再收紧一层。
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+
+volumes:
+  relay-data:

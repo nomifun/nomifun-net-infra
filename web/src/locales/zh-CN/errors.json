@@ -1,0 +1,40 @@
+{
+  "generic": "出错了",
+  "network": "连不上中继。检查它是否在运行，以及控制台监听地址是否正确。",
+  "unauthenticated": "会话已失效，请重新登录",
+  "csrf": "请求被 CSRF 防护拒绝，请刷新后重试",
+  "not_found": "对象不存在",
+  "conflict": "与已有对象冲突（名称重复或端口被占）",
+  "token_used": "入网令牌已被使用",
+  "token_expired": "入网令牌已过期",
+  "internal": "中继内部错误，详情见诊断页的日志",
+  "misdirected": "Host 头不被允许（DNS 重绑定防护）",
+  "notImplemented": "中继当前版本还没实现这个接口（控制台按规格保留了入口）",
+  "contractMismatch": "控制台版本与中继不一致",
+  "refresh": "请刷新",
+  "eventKind": {
+    "agent_online": "代理端上线",
+    "agent_offline": "代理端离线",
+    "agent_enrolled": "代理端入网",
+    "agent_revoked": "代理端被撤销",
+    "agent_handshake_failed": "握手失败",
+    "tunnel_created": "隧道已创建",
+    "tunnel_updated": "隧道已更新",
+    "tunnel_deleted": "隧道已删除",
+    "tunnel_rejected": "隧道被代理端否决",
+    "tunnel_stream_denied": "目标被代理端策略否决（拨号时）",
+    "turn_credential_issued": "签发了临时 TURN 凭据",
+    "console_support_bundle": "下载支持包（外发）",
+    "console_login": "控制台登录",
+    "console_login_failed": "登录失败",
+    "pairing_invite_created": "创建 Desktop 配对邀请",
+    "relay_started": "中继启动",
+    "relay_draining": "中继排空中"
+  },
+  "level": {
+    "info": "信息",
+    "warn": "警告",
+    "error": "错误",
+    "debug": "调试"
+  }
+}

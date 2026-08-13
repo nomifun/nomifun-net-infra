@@ -1,0 +1,25 @@
+{
+  "title": "Media relay",
+  "column": {
+    "credential": "Credential",
+    "relayed": "Relayed address",
+    "peers": "Peers",
+    "bytes": "Bytes relayed",
+    "ttl": "Credential TTL",
+    "created": "Created"
+  },
+  "mint": {
+    "action": "Mint browser credential",
+    "label": "iceServers (feed straight to RTCPeerConnection)",
+    "note": "Valid for {{ttl}}, expires {{at}}. Refresh via setConfiguration on the browser side; do not cache long-term."
+  },
+  "disabled": {
+    "title": "Media relay (TURN) is not enabled on this relay",
+    "action": "Open settings"
+  },
+  "empty": {
+    "title": "No TURN allocations right now",
+    "action": "Create a UDP media tunnel"
+  },
+  "note": "TURN allocations are deliberately not tunnels: the console does not create them, so they get their own screen. The counters come from our own RelayAddressGenerator — pion/turn exposes neither counters nor allocation enumeration."
+}

@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "perf": "warn"
+  },
+  "rules": {
+    // 新版 JSX 转换不需要 React 在作用域里；这条规则是 React 17 之前的遗物。
+    "react/react-in-jsx-scope": "off",
+    // Arco 的 Table columns[].render 是渲染函数而不是组件，误报在这里没有价值。
+    "react/no-unstable-nested-components": ["warn", { "allowAsProps": true }],
+    // 环形缓冲索引在 noUncheckedIndexedAccess 下必须 `?? 0`，
+    // 绝不允许用 `!` 把类型系统的提醒按掉。
+    "typescript/no-non-null-assertion": "error",
+    // Vite 的 define 注入按惯例用双下划线包裹，这是约定而不是私有字段。
+    "eslint/no-underscore-dangle": ["warn", { "allow": ["__API_CONTRACT_VERSION__"] }]
+  },
+  "ignorePatterns": ["dist", "node_modules"]
+}

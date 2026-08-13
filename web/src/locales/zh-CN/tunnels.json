@@ -1,0 +1,192 @@
+{
+  "title": "隧道",
+  "count": "隧道（{{count}}）",
+  "searchPlaceholder": "搜索名称、公网端点或目标",
+  "filter": {
+    "kind": "类型",
+    "state": "状态",
+    "mode": "模式",
+    "all": "全部"
+  },
+  "column": {
+    "state": "状态",
+    "endpoint": "名称 / 公网端点 → 目标",
+    "mode": "模式",
+    "exposure": "暴露",
+    "sessions": "会话",
+    "rtt": "RTT",
+    "traffic": "流量 入/出",
+    "actions": "操作"
+  },
+  "row": {
+    "agent": "代理端「{{name}}」",
+    "relayDials": "中继直拨",
+    "rttSparkline": "最近 15 分钟 RTT",
+    "noData": "无数据",
+    "fileManaged": "文件管理",
+    "p95": "p95 {{value}}",
+    "lossPps": "丢包 {{loss}} · {{pps}} pps"
+  },
+  "empty": {
+    "title": "还没有隧道",
+    "pickTemplate": "从模板开始"
+  },
+  "template": {
+    "httpApi": {
+      "name": "HTTP + WebSocket API",
+      "detail": "网关模式，共用 443，按 Host 路由"
+    },
+    "udpMedia": {
+      "name": "UDP 媒体（WebRTC + TURN）",
+      "detail": "不可靠数据报，低延迟优先"
+    },
+    "fixedPort": {
+      "name": "固定端口 → 远程桌面",
+      "detail": "独占入口端口，直通"
+    },
+    "tcpSsh": {
+      "name": "TCP · SSH",
+      "detail": "独占端口 + 来源允许列表"
+    }
+  },
+  "delete": {
+    "title": "删除隧道 {{slug}}",
+    "warn": "删除后入口监听器会立刻关闭，正在进行的会话会被断开。"
+  },
+  "toast": {
+    "enabled": "已启用 {{slug}}",
+    "disabled": "已停用 {{slug}}",
+    "deleted": "已删除 {{slug}}",
+    "created": "已创建 {{slug}}",
+    "updated": "已更新 {{slug}}"
+  },
+  "wizard": {
+    "title": "新建隧道",
+    "editTitle": "编辑隧道 {{slug}}",
+    "step": {
+      "target": "目标",
+      "protocol": "协议",
+      "mode": "模式",
+      "exposure": "暴露",
+      "test": "测试"
+    },
+    "target": {
+      "slug": "名称",
+      "slugHint": "小写字母数字与连字符，会出现在 URL 与日志里",
+      "source": "谁来抵达目标",
+      "withAgent": "由代理端承载",
+      "withAgentHint": "在目标所在机器上跑 agent，目标地址的最终裁决权在 agent 一侧",
+      "withoutAgent": "中继直接拨号（v1 未实现）",
+      "withoutAgentHint": "v1 里中继侧没有自己拨号的路径 —— 三个数据面入口都要求一个在线 agent。选它建出来的隧道会一直停在「等待代理端上线」，或者在恰好一个 agent 在线时被自动绑到那个 agent 上（与你选的相反）。没做的主要原因是中继侧必须先实现与 agent 同一套目标策略，否则那条路上没有 SSRF 防线。",
+      "agent": "代理端",
+      "agentPlaceholder": "选择一个在线的代理端",
+      "noAgents": "还没有代理端",
+      "addr": "目标地址",
+      "addrPlaceholder": "127.0.0.1:8080",
+      "addrHint": "agent 会在每次拨号时校验已解析的地址，云元数据地址永久拒绝"
+    },
+    "protocol": {
+      "l4": "传输层",
+      "udpHint": "UDP 走不可靠数据报，语义与 UDP 逐条对应；不会因为一条流卡住而阻塞其他流",
+      "exposure": "入口形态",
+      "exposurePort": "独占端口",
+      "exposureShared": "共享端口（按 Host / SNI 分流）",
+      "sharedUdpDisabled": "UDP 里没有 SNI 也没有 Host 可读，共享端口分流只对 TCP 有意义。",
+      "routerKind": "分流方式",
+      "routerAuto": "由模式决定：网关 → 按 Host 与路径，直通 → 按 SNI（SNI 是明文，读它不需要解密）。",
+      "listenPort": "入口端口",
+      "listenPortHint": "留空由中继分配",
+      "domains": "域名",
+      "domainsPlaceholder": "api.example.com",
+      "locations": "路径前缀",
+      "locationsPlaceholder": "/api",
+      "hostRewrite": "改写 Host 头",
+      "hostRewriteHint": "接入 nomifun-tauri 时必需：它的 host guard 会 403 掉任何域名型 Host"
+    },
+    "mode": {
+      "question": "中继如何处理 TLS？",
+      "recommended": "推荐",
+      "passthroughTagline": "中继只搬运密文，不解密",
+      "gatewayTagline": "中继终止 TLS，按 Host / 路径路由",
+      "passthroughPro1": "私钥留在你的服务器",
+      "passthroughPro2": "端到端加密，中继零信任",
+      "passthroughCon1": "无 ACME，证书自理",
+      "passthroughCon2": "一个端口一条隧道",
+      "passthroughCon3": "无 HTTP 层指标（状态码 / 路径 / 每请求延迟）",
+      "passthroughCon4": "后端拿不到真实客户端 IP，仅 PROXY protocol 可补",
+      "gatewayPro1": "ACME 自动证书",
+      "gatewayPro2": "多隧道共用 443",
+      "gatewayPro3": "可注入鉴权 / XFF 真实 IP",
+      "gatewayPro4": "状态码 / 路径 / 每请求延迟指标",
+      "gatewayCon1": "私钥与明文经过中继",
+      "gatewayCon2": "ESP32 无 SNI 的场景仍可用（明文 http/ws）",
+      "disabledHostRewrite": "本模板需要改写 Host 头，而直通模式按定义读不到明文、改不了请求头，因此不可选。",
+      "compareTitle": "逐项对比",
+      "compareItem": "项目",
+      "compare": {
+        "keyLocation": "TLS 私钥位置",
+        "keyLocationPassthrough": "你的服务器",
+        "keyLocationGateway": "中继",
+        "plaintext": "中继可见明文",
+        "acme": "ACME 自动证书",
+        "hostRouting": "Host / 路径路由，多隧道共用 443",
+        "hostRoutingPassthrough": "一端口一隧道",
+        "injectAuth": "注入鉴权 / 改写请求头",
+        "realIP": "后端拿到真实客户端 IP",
+        "realIPPassthrough": "仅 PROXY protocol",
+        "realIPGateway": "XFF + PROXY",
+        "httpMetrics": "状态码 / 路径 / 每请求延迟指标",
+        "esp32": "ESP32 裸 IP、无 SNI",
+        "esp32Gateway": "可用（明文 http/ws）"
+      }
+    },
+    "gatewayOnly": {
+      "reason": "直通模式下中继不解密，这个字段无效。选网关模式即可启用。"
+    },
+    "exposureStep": {
+      "title": "暴露面",
+      "summary": "{{addr}} · 来源 IP：{{source}} · 应用层鉴权：{{auth}}",
+      "sourceAny": "任意",
+      "sourceList": "{{count}} 条允许列表",
+      "authNone": "无",
+      "authSome": "已配置",
+      "allowList": "来源允许列表",
+      "allowListPlaceholder": "203.0.113.0/24",
+      "addAllowList": "添加来源允许列表",
+      "note": "设备只能填 IP + 端口时，边界只能落在网络层。上线后可用「学习模式」把观测到的来源一键固定为允许列表。",
+      "confirmOpen": "这条隧道对公网任意地址开放且没有应用层鉴权，需要输入名称确认。",
+      "maxConns": "并发连接上限",
+      "bytesPerSecond": "限速（字节/秒）",
+      "packetsPerSecond": "包速率上限（pps）",
+      "ppsHint": "必须与限速同时配：10 万 pps 的 64 字节小包是现实攻击，只看字节的限速器会放行它",
+      "maxConnsPerIP": "单 IP 最多几路"
+    },
+    "preview": {
+      "title": "生成的配置预览",
+      "agent": "代理端配置",
+      "relay": "relay.yaml 片段",
+      "hint": "控制台教你写，文件负责提交。中继永不反向从文件读回控制台改动。"
+    },
+    "submit": "创建并测试",
+    "submitEdit": "保存",
+    "validating": "校验中…",
+    "validateFailed": "中继拒绝了这份配置",
+    "probe": {
+      "title": "逐跳探测",
+      "run": "运行测试",
+      "fromInternet": "从外网测",
+      "fromInternetHint": "loopback 会骗你：本机通不代表公网通",
+      "hop": {
+        "listener_bound": "入口监听器已绑定",
+        "agent_reachable": "代理端可达",
+        "carrier_rtt": "承载 RTT",
+        "target_dialable": "目标可拨号",
+        "first_byte": "首字节 / 101 升级"
+      },
+      "example": "等价命令",
+      "ok": "全链路通",
+      "failedAt": "在「{{hop}}」这一跳失败",
+      "okPartial": "已测的环节都通过，但有 {{count}} 跳没有测（见上面标「—」的行）—— 不等于端到端可用"
+    }
+  }
+}

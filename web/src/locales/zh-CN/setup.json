@@ -1,0 +1,52 @@
+{
+  "title": "首次启动",
+  "subtitle": "零到一条可用隧道，目标两分钟内",
+  "step": {
+    "admin": "创建管理员",
+    "address": "确认公网地址",
+    "attach": "接一个目标",
+    "done": "完成"
+  },
+  "admin": {
+    "username": "用户名",
+    "usernamePlaceholder": "admin",
+    "password": "密码",
+    "generate": "生成 24 位随机密码",
+    "showOnce": "密码只显示一次，请立刻复制保存。同时以 0600 权限写入数据目录的 initial-admin-password。",
+    "empty": "用户名与密码都不能为空",
+    "submit": "创建管理员",
+    "rejectWeak": "拒绝空凭据与 admin/admin 这类默认口令。"
+  },
+  "address": {
+    "detected": "中继自测到的公网地址：{{addr}}",
+    "unknown": "尚未测到公网地址",
+    "stunNote": "由 STUN 自测得到。请确认它确实是外部能访问到的地址。",
+    "confirm": "确认，继续"
+  },
+  "attach": {
+    "title": "目标怎么接？",
+    "withAgent": {
+      "title": "有代理端",
+      "detail": "在被暴露服务所在的机器上跑一个 agent。目标地址的最终裁决权留在 agent 一侧。",
+      "action": "生成入网命令"
+    },
+    "withoutAgent": {
+      "title": "无代理端",
+      "detail": "直接转发到一个地址，中继自己拨号。设备只能填 IP + 端口时走这条。",
+      "action": "填目标地址"
+    }
+  },
+  "waiting": {
+    "title": "等待代理端接入…",
+    "hint": "页面在监听事件流，接上会自己往下走。长杆是下载二进制，命令贴过去就行。",
+    "connected": "已连接 {{host}}（{{os}}/{{arch}}）"
+  },
+  "template": {
+    "title": "选一个模板",
+    "skip": "跳过，稍后自己建"
+  },
+  "done": {
+    "title": "隧道已就绪",
+    "open": "打开隧道详情"
+  }
+}

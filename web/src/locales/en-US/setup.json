@@ -1,0 +1,52 @@
+{
+  "title": "First run",
+  "subtitle": "Zero to a working tunnel, target under two minutes",
+  "step": {
+    "admin": "Create admin",
+    "address": "Confirm public address",
+    "attach": "Attach a target",
+    "done": "Done"
+  },
+  "admin": {
+    "username": "Username",
+    "usernamePlaceholder": "admin",
+    "password": "Password",
+    "generate": "Generate a 24-character password",
+    "showOnce": "Shown once — copy it now. It is also written to initial-admin-password in the data dir with mode 0600.",
+    "empty": "Username and password are both required",
+    "submit": "Create admin",
+    "rejectWeak": "Empty credentials and admin/admin-style defaults are refused."
+  },
+  "address": {
+    "detected": "Public address the relay detected: {{addr}}",
+    "unknown": "No public address detected yet",
+    "stunNote": "Detected via STUN. Confirm that this is the address the outside world actually reaches.",
+    "confirm": "Confirm and continue"
+  },
+  "attach": {
+    "title": "How is the target attached?",
+    "withAgent": {
+      "title": "With an agent",
+      "detail": "Run an agent on the machine hosting the service. The final say over the target address stays with the agent.",
+      "action": "Generate a join command"
+    },
+    "withoutAgent": {
+      "title": "Without an agent",
+      "detail": "Forward straight to an address; the relay dials it itself. Use this when the device only takes an IP + port.",
+      "action": "Enter a target address"
+    }
+  },
+  "waiting": {
+    "title": "Waiting for the agent to join…",
+    "hint": "This page is watching the event stream and moves on by itself. The long pole is the binary download; just paste the command.",
+    "connected": "Connected {{host}} ({{os}}/{{arch}})"
+  },
+  "template": {
+    "title": "Pick a template",
+    "skip": "Skip, I will build it myself"
+  },
+  "done": {
+    "title": "The tunnel is live",
+    "open": "Open tunnel detail"
+  }
+}

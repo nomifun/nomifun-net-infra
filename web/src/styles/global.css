@@ -1,0 +1,58 @@
+/* 只放 Arco token 覆盖不到的东西。颜色一律走 Arco CSS 变量，绝不硬编码。 */
+
+/* react-router 的 NavLink/Link 渲染的是裸 <a>，而这里没有引入任何 CSS reset：
+ * UnoCSS 的 presetWind3 preflight 不含 Tailwind 那条 `a { text-decoration: inherit }`，
+ * Arco 的样式表也只管自己的 .arco-link。结果全站导航链接都挂着浏览器默认下划线，
+ * 界面看起来像没上样式。
+ *
+ * 这是**浏览器截图**看出来的：tsc、oxlint、locale 对齐全绿，功能冒烟也全过，
+ * 因为没有一道闸门会去看「渲染出来好不好看」。
+ *
+ * 不整体引入 @unocss/reset：那会一并归零标题、列表、表单元素的样式，
+ * 而 Arco 的组件正依赖它们自己的一套。这里只修真正缺的那一条。
+ * color 不写 inherit —— 导航用 text-1/text-2 工具类设色，
+ * 工具类特异度（0,1,0）本就压过元素选择器（0,0,1）。 */
+a {
+  text-decoration: none;
+}
+
+body {
+  margin: 0;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--color-bg-1);
+  color: var(--color-text-1);
+}
+
+/* 等宽字段（端点、地址、命令）统一字号，表格里对齐才好读。 */
+.nfr-mono {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 13px;
+}
+
+/* uPlot 的容器必须有确定宽度，否则 ResizeObserver 第一次量到 0。 */
+.nfr-chart {
+  width: 100%;
+  min-width: 0;
+}
+
+.nfr-chart .u-legend {
+  font-size: 12px;
+}
+
+/* 表格里的 sparkline 不该撑高行。 */
+.nfr-spark {
+  display: block;
+  overflow: visible;
+}
+
+/* 命令块：可选中、可换行，长命令不撑破布局。 */
+.nfr-cmd {
+  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: all;
+}

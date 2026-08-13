@@ -1,0 +1,50 @@
+{
+  "title": "Settings",
+  "column": {
+    "key": "Setting",
+    "value": "Effective value",
+    "provenance": "Source",
+    "actions": "Actions"
+  },
+  "group": {
+    "listeners": "Listeners",
+    "tls": "TLS / ACME",
+    "auth": "Auth",
+    "retention": "Retention",
+    "backup": "Backup",
+    "other": "Other"
+  },
+  "empty": {
+    "title": "Cannot read the effective config",
+    "action": "Retry"
+  },
+  "editor": {
+    "title": "Edit configuration",
+    "validate": "Validate",
+    "apply": "Apply",
+    "ok": "Validation passed, ready to apply",
+    "failed": "Validation failed, nothing written to disk",
+    "note": "Writes must pass validation before apply, so a bad document never reaches disk.",
+    "docNote": "This is a declarative document: tunnels missing from the list get deleted. Format: {\"version\":1,\"tunnels\":[…]}.",
+    "diffTitle": "What this will do",
+    "create": "Create",
+    "update": "Update",
+    "delete": "Delete",
+    "unchanged": "Unchanged",
+    "deleteWarning": "The {{count}} tunnel(s) below are not in the document and will be deleted on apply. This cannot be undone.",
+    "nothingToDo": "The document already matches the current configuration; applying it changes nothing.",
+    "confirmTitle": "Delete {{count}} tunnel(s)?",
+    "confirmBody": "A declarative import deletes tunnels missing from the document: {{slugs}}. This cannot be undone.",
+    "applied": "Applied: {{create}} created, {{update}} updated, {{delete}} deleted",
+    "partial": "Only partially applied ({{applied}} written). The document describes the desired end state, so re-running it is safe.",
+    "savedNotRunning": "Configuration saved, but the runtime did not come up.",
+    "errorAt": "Item {{index}}",
+    "template": "Insert template"
+  },
+  "password": {
+    "title": "Change password",
+    "new": "New password",
+    "submit": "Update password",
+    "mustRotate": "This is the first sign-in; the password must be rotated."
+  }
+}

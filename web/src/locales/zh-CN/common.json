@@ -1,0 +1,133 @@
+{
+  "app": {
+    "name": "NomiRelay",
+    "subtitle": "中继控制台"
+  },
+  "nav": {
+    "overview": "概览",
+    "tunnels": "隧道",
+    "agents": "代理端",
+    "media": "媒体中继",
+    "diagnostics": "诊断",
+    "settings": "设置"
+  },
+  "action": {
+    "create": "新建",
+    "edit": "编辑",
+    "duplicate": "复制",
+    "delete": "删除",
+    "enable": "启用",
+    "disable": "停用",
+    "test": "测试",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "back": "上一步",
+    "next": "下一步",
+    "retry": "重试",
+    "refresh": "刷新",
+    "close": "关闭",
+    "learnMore": "了解",
+    "search": "搜索",
+    "login": "登录",
+    "logout": "退出登录",
+    "copy": "复制",
+    "copied": "已复制",
+    "copyFailed": "复制失败，请手动选中",
+    "download": "下载",
+    "more": "更多",
+    "reload": "刷新页面"
+  },
+  "state": {
+    "active": "运行中",
+    "degraded": "降级",
+    "stopped": "停止",
+    "error": "错误",
+    "draft": "草稿",
+    "pending": "待生效",
+    "rejected_by_agent": "被代理端否决",
+    "unknown": "未知"
+  },
+  "mode": {
+    "passthrough": "直通",
+    "gateway": "网关",
+    "passthroughFull": "直通 passthrough",
+    "gatewayFull": "网关 gateway"
+  },
+  "exposure": {
+    "label": "暴露",
+    "restricted": "受限",
+    "open": "开放",
+    "accepted": "开放·已接受",
+    "restrictedTip": "已配置来源允许列表，只有列表内的地址能到达。",
+    "openTip": "独占端口且没有来源限制，公网任意地址都能到达。可用「学习模式」一键收紧。",
+    "acceptedTip": "你已明确接受这条隧道的开放暴露，此处不再提示。"
+  },
+  "kind": {
+    "service": "服务（外部访问内网）",
+    "reverse": "固定入口（设备只填 IP+端口）",
+    "peer": "对等（v1 未实现）"
+  },
+  "l4": {
+    "tcp": "TCP",
+    "udp": "UDP"
+  },
+  "theme": {
+    "toggle": "切换明暗",
+    "light": "浅色",
+    "dark": "深色"
+  },
+  "lang": {
+    "toggle": "切换语言",
+    "zhShort": "中",
+    "enShort": "EN"
+  },
+  "stream": {
+    "label": "流健康",
+    "open": "正常",
+    "connecting": "连接中",
+    "retrying": "重连中",
+    "closed": "已断开",
+    "dropped": "丢帧 {{count}}",
+    "droppedTip": "中继采样而非排队：读得慢就丢 metric 帧，绝不阻塞数据面。",
+    "stale": "已 {{seconds}} 秒没有新数据",
+    "contractMismatch": "中继的接口契约版本与当前页面不一致 —— 界面上的数字可能不完整或读不出来。请刷新页面。",
+    "noDataYet": "还没有数据点 —— 中继每秒推一次，稍等一下"
+  },
+  "unit": {
+    "ms": "ms",
+    "us": "µs",
+    "percent": "%",
+    "mbps": "Mbps",
+    "pps": "pps",
+    "bytesShort": "B",
+    "count": "条"
+  },
+  "time": {
+    "never": "从未",
+    "justNow": "刚刚",
+    "secondsAgo": "{{count}} 秒前",
+    "minutesAgo": "{{count}} 分钟前",
+    "hoursAgo": "{{count}} 小时前",
+    "daysAgo": "{{count}} 天前"
+  },
+  "provenance": {
+    "label": "来源",
+    "file": "文件",
+    "console": "控制台",
+    "default": "默认值",
+    "env": "环境变量",
+    "fileManaged": "文件管理",
+    "fileManagedTip": "由 {{ref}} 管理，控制台不可修改。可先复制为控制台副本再改。",
+    "copyToConsole": "复制为控制台副本"
+  },
+  "typeToConfirm": {
+    "label": "输入 {{slug}} 以确认",
+    "mismatch": "输入的名称不一致"
+  },
+  "shortcut": {
+    "search": "按 / 搜索",
+    "create": "按 c 新建"
+  },
+  "listSeparator": "、"
+}

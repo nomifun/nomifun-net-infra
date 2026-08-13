@@ -1,0 +1,39 @@
+{
+  "name": "nomirelay-console",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "bun run check:types && bun run check:locales && bun run check:vocab && bun run check:no-cjk && bun run lint",
+    "check:types": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "check:locales": "bun scripts/check-locales.mjs",
+    "check:vocab": "bun scripts/check-vocabulary.mjs",
+    "check:no-cjk": "bun scripts/check-no-hardcoded-cjk.mjs",
+    "lint": "oxlint --deny-warnings src scripts"
+  },
+  "dependencies": {
+    "@arco-design/web-react": "2.66.16",
+    "i18next": "26.3.6",
+    "qrcode.react": "4.2.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-i18next": "17.0.11",
+    "react-router-dom": "7.18.2",
+    "swr": "2.5.0",
+    "uplot": "1.6.32",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.4",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "@vitejs/plugin-react": "5.1.0",
+    "oxlint": "1.77.0",
+    "typescript": "5.9.3",
+    "unocss": "66.7.5",
+    "unocss-preset-extra": "1.0.0",
+    "vite": "7.3.6"
+  }
+}

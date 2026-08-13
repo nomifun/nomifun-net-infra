@@ -1,0 +1,161 @@
+{
+  "back": "返回隧道列表",
+  "summary": "{{tls}} · {{l4}} · kind={{kind}}",
+  "tab": {
+    "live": "实时",
+    "config": "配置",
+    "history": "历史"
+  },
+  "live": {
+    "packets": "包数（上行 / 下行）",
+    "stat": {
+      "rtt": "RTT p50/p95/p99",
+      "loss": "丢包 %",
+      "throughput": "吞吐 入/出",
+      "mtu": "当前 DGRAM MTU",
+      "sessions": "活跃会话",
+      "rttTip": "承载往返（控制流 Ping/Pong）。会话级：同一个代理端名下所有隧道是同一条曲线。含重传与对端调度延迟，比链路 RTT 偏大"
+    },
+    "mtuNegotiated": "已协商",
+    "mtuLearning": "协商中",
+    "mtuTip": "反应式学到的值。PMTUD 完成前它偏小（约 1244 B），不显示就没人能解释「为什么大包失败小包正常」。",
+    "chartTitle": "15 分钟 · 1 Hz",
+    "udpDrops": {
+      "title": "UDP 分级丢弃（60s）",
+      "queueHead": "公网→队列（丢队头）",
+      "inflight": "队列→载体（inflight 上限）",
+      "kernel": "载体→本地（内核错误）",
+      "hint": "「我们丢了」没用；「在载体 inflight 上限丢的」才告诉你该调哪个参数。"
+    },
+    "reorder": {
+      "title": "乱序",
+      "count": "计数",
+      "maxDepth": "最大深度",
+      "jitter": "到达间隔抖动"
+    },
+    "frag": {
+      "title": "分片",
+      "rate": "分片率",
+      "timeouts": "重组超时"
+    },
+    "sessions": {
+      "title": "会话（{{count}}）",
+      "peer": "对端",
+      "pps": "pps",
+      "path": "路径",
+      "direct": "直连",
+      "relayed": "经中继",
+      "unknown": "未知",
+      "since": "开始于",
+      "sinceOpen": "只列出本页打开之后观测到的会话 —— 会话是观测状态，它的消失绝不意味隧道被删除。",
+      "empty": "当前没有会话"
+    },
+    "denied": {
+      "tableFull": "会话表已满",
+      "perIPQuota": "超每源 IP 配额",
+      "reassembly": "分片重组失败",
+      "unknownFlow": "回包无对应会话",
+      "title": "分阶段拒绝",
+      "cidr": "来源不在允许列表",
+      "noSession": "没有可用会话",
+      "openFailed": "开流失败",
+      "rateLimited": "被限速",
+      "wrongAgent": "发包代理端不符（安全事件）",
+      "carrier": "承载发送队列丢弃",
+      "overlapping": "分片范围重叠（安全事件）",
+      "evicted": "会话被挤出（表满）",
+      "rateLimitedBytes": "超限速被丢弃"
+    },
+    "passthrough": {
+      "notice": "直通模式下中继不解析应用层，故无状态码 / 路径指标。可用：连接数、字节、RTT。",
+      "clientIP": "后端拿到的客户端 IP 在直通模式下确实是 unknown —— 只有 PROXY protocol 能把它补回来。这里如实呈现，不悄悄伪造。",
+      "switch": "切换到网关模式"
+    },
+    "switchDialog": {
+      "title": "切换到网关模式",
+      "intro": "这次切换会改变信任边界，请逐条确认：",
+      "item1": "中继开始为该域名签发证书（ACME），签发期间会有一次短暂的验证流量。",
+      "item2": "TLS 私钥移到中继，中继因此能看见明文。",
+      "item3": "这些请求头会被注入：X-Forwarded-For、X-Forwarded-Proto、X-Real-IP。",
+      "item4": "入口可与其他隧道共用 443，端口独占关系随之改变。",
+      "confirm": "我理解代价，切换"
+    },
+    "http": {
+      "title": "HTTP 指标",
+      "status2xx": "2xx",
+      "status4xx": "4xx",
+      "status5xx": "5xx",
+      "p95": "每请求 p95",
+      "topPath": "热点路径"
+    },
+    "fragments": "回向分片 / 重组成功"
+  },
+  "config": {
+    "title": "生效配置",
+    "column": {
+      "field": "字段",
+      "value": "生效值",
+      "provenance": "来源"
+    },
+    "field": {
+      "slug": "名称",
+      "kind": "类型",
+      "tls": "TLS 模式",
+      "exposure": "入口形态",
+      "l4": "传输层",
+      "agent": "代理端",
+      "listenPort": "入口端口",
+      "backend": "目标",
+      "router": "分流",
+      "allowCidrs": "来源允许列表",
+      "maxConns": "并发上限",
+      "bytesPerSecond": "限速",
+      "packetsPerSecond": "包速率上限",
+      "enabled": "启用",
+      "maxConnsPerIP": "单 IP 并发上限"
+    },
+    "editDisabled": "该行由配置文件管理，控制台不可修改。",
+    "unset": "未设置",
+    "unlimited": "不限",
+    "sameAsMaxConns": "与并发上限相同"
+  },
+  "history": {
+    "range": {
+      "1h": "1 小时",
+      "24h": "24 小时",
+      "7d": "7 天",
+      "30d": "30 天"
+    },
+    "traffic": "流量 入/出",
+    "rtt": "RTT 均值 / 峰值",
+    "conns": "连接 成功/失败",
+    "empty": "这段时间没有样本",
+    "retention": "留存：1 分钟粒度 48 小时、5 分钟粒度 30 天、1 小时粒度 400 天。"
+  },
+  "learn": {
+    "title": "学习模式",
+    "intro": "把中继实际观测到的来源固定成允许列表，收窄这条隧道的暴露面。勾上要保留的，其余不动。",
+    "since": "观测起点 {{at}}",
+    "volatile": "观测只在内存里，中继重启即清空 —— 这些是第三方地址，绝不落库。",
+    "empty": "还没观测到任何来源。有客户端连过之后这里会出现它们的地址。",
+    "unsupported": "本中继版本不观测来源地址。",
+    "cidr": "来源",
+    "hits": "命中",
+    "lastSeen": "最近",
+    "hint": "命中次数少、只在某一刻出现过的地址，多半是扫描器而不是你的客户端 —— 学习窗口里两者混在一起，中继分不开。",
+    "truncated": "这份列表不完整：观测条数到过上限（很可能被一次端口扫描打满）。照它收窄会把没上榜的真实客户端全部锁在门外。",
+    "already": "这条隧道已有允许列表；勾选的来源会并入，不会覆盖已有网段。",
+    "open": "这条隧道当前不限来源（allow_cidrs 为空 = 放行一切）。",
+    "apply": "并入允许列表",
+    "applyN": "并入 {{count}} 条",
+    "decline": "保持开放",
+    "declined": "已记录你的选择，不再提示。",
+    "confirmTitle": "收窄这条隧道的来源？",
+    "confirmBody": "只有下面 {{count}} 个前缀还能连上这条隧道，其他一律拒绝。还没露面的客户端会被挡在门外，届时需要回来手工加网段。",
+    "applied": "已并入 {{count}} 条允许前缀。",
+    "nothingNew": "勾选的来源已经全部在允许列表里，没有需要新增的。",
+    "nothingSelected": "先勾选至少一条 —— 空的允许列表等于放行一切，不是收窄。"
+  },
+  "notFound": "没有找到 slug 为「{{slug}}」的隧道 —— 它可能已被改名或删除",
+  "backToList": "回到隧道列表"
+}

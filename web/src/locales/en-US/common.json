@@ -1,0 +1,133 @@
+{
+  "app": {
+    "name": "NomiRelay",
+    "subtitle": "Relay console"
+  },
+  "nav": {
+    "overview": "Overview",
+    "tunnels": "Tunnels",
+    "agents": "Agents",
+    "media": "Media relay",
+    "diagnostics": "Diagnostics",
+    "settings": "Settings"
+  },
+  "action": {
+    "create": "New",
+    "edit": "Edit",
+    "duplicate": "Duplicate",
+    "delete": "Delete",
+    "enable": "Enable",
+    "disable": "Disable",
+    "test": "Test",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "retry": "Retry",
+    "refresh": "Refresh",
+    "close": "Close",
+    "learnMore": "Learn",
+    "search": "Search",
+    "login": "Sign in",
+    "logout": "Sign out",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Copy failed — select it manually",
+    "download": "Download",
+    "more": "More",
+    "reload": "Reload"
+  },
+  "state": {
+    "active": "Running",
+    "degraded": "Degraded",
+    "stopped": "Stopped",
+    "error": "Error",
+    "draft": "Draft",
+    "pending": "Pending",
+    "rejected_by_agent": "Rejected by agent",
+    "unknown": "Unknown"
+  },
+  "mode": {
+    "passthrough": "Passthrough",
+    "gateway": "Gateway",
+    "passthroughFull": "Passthrough",
+    "gatewayFull": "Gateway"
+  },
+  "exposure": {
+    "label": "Exposure",
+    "restricted": "Restricted",
+    "open": "Open",
+    "accepted": "Open · accepted",
+    "restrictedTip": "A source allow-list is configured; only listed addresses can reach it.",
+    "openTip": "Dedicated port with no source restriction — any address on the internet can reach it. Learn mode can tighten this in one click.",
+    "acceptedTip": "You explicitly accepted this open exposure; no further prompts."
+  },
+  "kind": {
+    "service": "Service (outside reaches an inside service)",
+    "reverse": "Fixed entrypoint (device only takes IP+port)",
+    "peer": "Peer (not implemented in v1)"
+  },
+  "l4": {
+    "tcp": "TCP",
+    "udp": "UDP"
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "lang": {
+    "toggle": "Switch language",
+    "zhShort": "中",
+    "enShort": "EN"
+  },
+  "stream": {
+    "label": "Stream health",
+    "open": "OK",
+    "connecting": "Connecting",
+    "retrying": "Reconnecting",
+    "closed": "Disconnected",
+    "dropped": "{{count}} frames dropped",
+    "droppedTip": "The relay samples instead of queueing: a slow reader loses metric frames and never blocks the data plane.",
+    "stale": "No new data for {{seconds}}s",
+    "contractMismatch": "The relay's API contract version differs from this page — numbers here may be incomplete or unreadable. Please reload.",
+    "noDataYet": "No data points yet — the relay pushes once per second"
+  },
+  "unit": {
+    "ms": "ms",
+    "us": "µs",
+    "percent": "%",
+    "mbps": "Mbps",
+    "pps": "pps",
+    "bytesShort": "B",
+    "count": ""
+  },
+  "time": {
+    "never": "Never",
+    "justNow": "Just now",
+    "secondsAgo": "{{count}}s ago",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  },
+  "provenance": {
+    "label": "Source",
+    "file": "File",
+    "console": "Console",
+    "default": "Default",
+    "env": "Env var",
+    "fileManaged": "File-managed",
+    "fileManagedTip": "Managed by {{ref}}; the console cannot edit it. Copy it as a console override first.",
+    "copyToConsole": "Copy as console override"
+  },
+  "typeToConfirm": {
+    "label": "Type {{slug}} to confirm",
+    "mismatch": "Name does not match"
+  },
+  "shortcut": {
+    "search": "Press / to search",
+    "create": "Press c to create"
+  },
+  "listSeparator": ", "
+}

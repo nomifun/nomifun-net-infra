@@ -1,0 +1,62 @@
+{
+  "title": "Agents",
+  "count": "Agents ({{count}})",
+  "column": {
+    "id": "Agent",
+    "version": "Version",
+    "platform": "OS / arch",
+    "rung": "Carrier rung",
+    "lastSeen": "Last seen",
+    "actions": "Actions",
+    "reported": "Agent-reported drops"
+  },
+  "online": "Online",
+  "offline": "Offline",
+  "revoked": "Revoked",
+  "rungUnknown": "unknown",
+  "datagram": "datagrams supported",
+  "noDatagram": "no datagram support",
+  "action": {
+    "rotate": "Rotate join token",
+    "kick": "Kick",
+    "revoke": "Revoke credentials"
+  },
+  "kick": {
+    "title": "Kick {{id}}",
+    "warn": "The connection drops immediately and the agent reconnects on its own. Its tunnels are unavailable until then."
+  },
+  "revoke": {
+    "title": "Revoke credentials for {{id}}",
+    "warn": "Revocation takes effect immediately and cannot be undone; the agent must re-enrol with a new token. The record is kept for audit."
+  },
+  "empty": {
+    "title": "No agents yet",
+    "action": "Generate a join command"
+  },
+  "install": {
+    "title": "Run this on the target machine",
+    "oneliner": "One-liner",
+    "raw": "Router / embedded (static binary)",
+    "printOnly": "Print only, do not execute",
+    "printOnlyHint": "The trust affordance any curl | sh needs: read it before you run it.",
+    "qr": "Scan with a phone",
+    "qrUnavailable": "This address is not externally reachable, so the QR code is hidden",
+    "expires": "The token expires in {{minutes}} minutes and enrols exactly one agent.",
+    "checksum": "The download URL is pinned and a checksum is published with each release."
+  },
+  "pairing": {
+    "action": "Create Desktop pairing",
+    "title": "Desktop pairing",
+    "create": "Create pairing string",
+    "ttl": "Lifetime (seconds)",
+    "listenPort": "Desktop listen port",
+    "note": "Note",
+    "string": "One-time pairing string",
+    "qr": "QR code",
+    "expires": "Pairing string expires {{time}}",
+    "error": "Failed to create the Desktop pairing string"
+  },
+  "waiting": "Waiting for an agent to come online…",
+  "connected": "Connected {{host}} ({{os}}/{{arch}})",
+  "reportedTip": "Reported by the agent (the relay cannot see these): dial failed {{dial}} · policy denied {{denied}} · local write failed {{write}} · send queue full {{queue}} · reassembly timed out {{timeout}}. Received {{age}}s ago"
+}

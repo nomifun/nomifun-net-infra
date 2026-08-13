@@ -1,0 +1,78 @@
+# NomiRelay 代理端（nfagent）的 systemd 单元。
+#
+# 安装（在**家庭内网**那台能访问后端服务的机器上，不是中继上）：
+#   sudo useradd --system --no-create-home --shell /usr/sbin/nologin nfagent
+#   sudo install -m 0755 nfagent /usr/local/bin/
+#   sudo install -m 0644 deploy/nfagent.service /etc/systemd/system/
+#   # 首次入网：把 -relay / -pin / -token 填进下面的 ExecStart（令牌从控制台签发）
+#   sudo systemctl daemon-reload && sudo systemctl enable --now nfagent
+#
+# 入网成功后凭据落在 /var/lib/nfagent，命令行里的 -token 就失效了（一次性）。
+# **可以**把 -token 从 ExecStart 里删掉，也可以留着 —— agent 有凭据时会忽略它。
+#
+# 沙箱指令与 nfrelay 单元一致，但有两处刻意的不同，见下方注释。
+
+[Unit]
+Description=NomiRelay 代理端
+Documentation=https://github.com/nomifun/nomifun-net-infra
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nfagent
+Group=nfagent
+
+# StateDirectory 让 systemd 自动创建 /var/lib/nfagent 并设好属主。
+# **必须**：入网凭据与机器标识落在这里，丢了就要重新入网（换 agent ID、
+# 既有隧道悬空）。ProtectSystem=strict 下这是 agent 唯一能写的地方，
+# 所以 ExecStart 里 -state-dir 显式指向它 —— 不靠默认值，因为 strict 下
+# 写错路径的报错是 EROFS，比 EACCES 更难认。
+StateDirectory=nfagent
+StateDirectoryMode=0700
+
+# 首次入网把 -token 填上；-relay 是中继公网地址，-pin 是启动中继时打印的
+# SPKI 指纹（base64）。
+ExecStart=/usr/local/bin/nfagent \
+    -relay RELAY_HOST:8443 \
+    -pin REPLACE_WITH_SPKI_PIN \
+    -token REPLACE_WITH_ENROL_TOKEN \
+    -state-dir /var/lib/nfagent
+
+# 重启语义与中继一致，理由也一样：开机时网络没就绪不该变成永久下线。
+# 对 agent 更关键 —— 凭据现在落盘了，重启后直接用密钥重连，不再需要人工。
+Restart=always
+RestartSec=1
+StartLimitIntervalSec=0
+
+KillSignal=SIGTERM
+TimeoutStopSec=15
+
+# ── 沙箱 ────────────────────────────────────────────────────────────────────
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# agent 只做**出站**连接，不绑任何端口，所以一个能力都不需要 ——
+# 与中继不同（中继要 CAP_NET_BIND_SERVICE 绑低端口）。整个集合清空。
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,50 @@
+{
+  "title": "设置",
+  "column": {
+    "key": "配置项",
+    "value": "生效值",
+    "provenance": "来源",
+    "actions": "操作"
+  },
+  "group": {
+    "listeners": "监听器",
+    "tls": "TLS / ACME",
+    "auth": "鉴权",
+    "retention": "留存",
+    "backup": "备份",
+    "other": "其他"
+  },
+  "empty": {
+    "title": "读不到生效配置",
+    "action": "重试"
+  },
+  "editor": {
+    "title": "编辑配置",
+    "validate": "校验",
+    "apply": "应用",
+    "ok": "校验通过，可以应用",
+    "failed": "校验失败，未写入磁盘",
+    "note": "写入必须先过校验再应用，所以一份坏文档永远到不了磁盘。",
+    "docNote": "这是一份声明式文档：不在清单里的隧道会被删掉。格式 {\"version\":1,\"tunnels\":[…]}。",
+    "diffTitle": "这次会发生什么",
+    "create": "新建",
+    "update": "更新",
+    "delete": "删除",
+    "unchanged": "未变",
+    "deleteWarning": "以下 {{count}} 条隧道不在文档里，应用后会被删除。这一步不可逆。",
+    "nothingToDo": "文档与当前配置完全一致，应用它不会有任何变化。",
+    "confirmTitle": "确认删除 {{count}} 条隧道？",
+    "confirmBody": "声明式导入会删掉不在文档里的隧道：{{slugs}}。这一步不可逆。",
+    "applied": "已应用：新建 {{create}}、更新 {{update}}、删除 {{delete}}",
+    "partial": "只应用了一部分（已落盘 {{applied}} 条）。这份文档描述的是终态，直接重跑它是安全的。",
+    "savedNotRunning": "配置已保存，但运行时没起来。",
+    "errorAt": "第 {{index}} 条",
+    "template": "填入模板"
+  },
+  "password": {
+    "title": "修改密码",
+    "new": "新密码",
+    "submit": "更新密码",
+    "mustRotate": "这是首次登录，必须先改密。"
+  }
+}

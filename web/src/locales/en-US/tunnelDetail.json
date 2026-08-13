@@ -1,0 +1,161 @@
+{
+  "back": "Back to tunnels",
+  "summary": "{{tls}} · {{l4}} · kind={{kind}}",
+  "tab": {
+    "live": "Live",
+    "config": "Config",
+    "history": "History"
+  },
+  "live": {
+    "packets": "Packets (up / down)",
+    "stat": {
+      "rtt": "RTT p50/p95/p99",
+      "loss": "Loss %",
+      "throughput": "Throughput in/out",
+      "mtu": "Current DGRAM MTU",
+      "sessions": "Active sessions",
+      "rttTip": "Carrier round-trip (control-stream ping/pong). Session-scoped: all tunnels under one agent share this curve. Includes retransmits and peer scheduling delay, so it reads higher than link RTT"
+    },
+    "mtuNegotiated": "negotiated",
+    "mtuLearning": "negotiating",
+    "mtuTip": "Learned reactively. Before PMTUD completes it sits low (~1244 B); without showing it, nobody can explain why large packets fail while small ones work.",
+    "chartTitle": "15 minutes · 1 Hz",
+    "udpDrops": {
+      "title": "UDP staged drops (60s)",
+      "queueHead": "public → queue (drop-head)",
+      "inflight": "queue → carrier (inflight cap)",
+      "kernel": "carrier → local (kernel error)",
+      "hint": "\"We dropped\" is useless; \"we dropped at the carrier inflight cap\" tells you which knob to turn."
+    },
+    "reorder": {
+      "title": "Reorder",
+      "count": "Count",
+      "maxDepth": "Max depth",
+      "jitter": "Inter-arrival jitter"
+    },
+    "frag": {
+      "title": "Fragmentation",
+      "rate": "Fragmentation rate",
+      "timeouts": "Reassembly timeouts"
+    },
+    "sessions": {
+      "title": "Sessions ({{count}})",
+      "peer": "Peer",
+      "pps": "pps",
+      "path": "Path",
+      "direct": "direct",
+      "relayed": "relayed",
+      "unknown": "unknown",
+      "since": "Since",
+      "sinceOpen": "Only sessions observed since this page opened — a Session is observed state, and its absence never implies the Tunnel was deleted.",
+      "empty": "No sessions right now"
+    },
+    "denied": {
+      "tableFull": "Flow table full",
+      "perIPQuota": "Per-source-IP quota",
+      "reassembly": "Fragment reassembly failed",
+      "unknownFlow": "Reply with no matching flow",
+      "title": "Staged rejections",
+      "cidr": "Source not in allow-list",
+      "noSession": "No usable session",
+      "openFailed": "Stream open failed",
+      "rateLimited": "Rate limited",
+      "wrongAgent": "Wrong sending agent (security)",
+      "carrier": "Dropped by carrier queue",
+      "overlapping": "Overlapping fragments (security)",
+      "evicted": "Flows evicted (table full)",
+      "rateLimitedBytes": "Dropped by rate limit"
+    },
+    "passthrough": {
+      "notice": "In passthrough the relay does not parse the application layer, so there are no status-code or path metrics. Available: connections, bytes, RTT.",
+      "clientIP": "In passthrough the client IP the backend sees really is unknown — only PROXY protocol restores it. Shown honestly rather than quietly faked.",
+      "switch": "Switch to gateway mode"
+    },
+    "switchDialog": {
+      "title": "Switch to gateway mode",
+      "intro": "This switch moves the trust boundary. Confirm each point:",
+      "item1": "The relay starts issuing a certificate for the domain (ACME), with a short validation burst.",
+      "item2": "The TLS private key moves to the relay, so the relay can see plaintext.",
+      "item3": "These headers get injected: X-Forwarded-For, X-Forwarded-Proto, X-Real-IP.",
+      "item4": "The entry can now share 443 with other tunnels, changing port exclusivity.",
+      "confirm": "I accept the cost — switch"
+    },
+    "http": {
+      "title": "HTTP metrics",
+      "status2xx": "2xx",
+      "status4xx": "4xx",
+      "status5xx": "5xx",
+      "p95": "Per-request p95",
+      "topPath": "Top path"
+    },
+    "fragments": "Reply fragments / reassembled"
+  },
+  "config": {
+    "title": "Effective config",
+    "column": {
+      "field": "Field",
+      "value": "Effective value",
+      "provenance": "Source"
+    },
+    "field": {
+      "slug": "Name",
+      "kind": "Kind",
+      "tls": "TLS mode",
+      "exposure": "Entry shape",
+      "l4": "Transport",
+      "agent": "Agent",
+      "listenPort": "Entry port",
+      "backend": "Target",
+      "router": "Routing",
+      "allowCidrs": "Source allow-list",
+      "maxConns": "Max connections",
+      "bytesPerSecond": "Rate limit",
+      "packetsPerSecond": "Packet rate limit",
+      "enabled": "Enabled",
+      "maxConnsPerIP": "Per-source-IP cap"
+    },
+    "editDisabled": "This row is managed by the config file; the console cannot edit it.",
+    "unset": "unset",
+    "unlimited": "unlimited",
+    "sameAsMaxConns": "Same as max conns"
+  },
+  "history": {
+    "range": {
+      "1h": "1 hour",
+      "24h": "24 hours",
+      "7d": "7 days",
+      "30d": "30 days"
+    },
+    "traffic": "Traffic in/out",
+    "rtt": "RTT mean / peak",
+    "conns": "Connections ok/failed",
+    "empty": "No samples in this range",
+    "retention": "Retention: 1-minute buckets for 48 h, 5-minute for 30 d, 1-hour for 400 d."
+  },
+  "learn": {
+    "title": "Learn mode",
+    "intro": "Pin the sources the relay has actually observed into an allow-list to narrow this tunnel's exposure. Check the ones to keep; the rest are left alone.",
+    "since": "Observing since {{at}}",
+    "volatile": "Observations live in memory only and are cleared on relay restart — these are third-party addresses and are never persisted.",
+    "empty": "No sources observed yet. Addresses will appear here once clients connect.",
+    "unsupported": "This relay build does not observe source addresses.",
+    "cidr": "Source",
+    "hits": "Hits",
+    "lastSeen": "Last seen",
+    "hint": "An address with few hits that showed up only once is most likely a scanner, not your client — during the learning window the relay cannot tell them apart.",
+    "truncated": "This list is incomplete: the observation cap was reached (most likely filled by a port scan). Narrowing from it would lock out every real client that did not make the list.",
+    "already": "This tunnel already has an allow-list; checked sources are merged in, existing ranges are not replaced.",
+    "open": "This tunnel currently accepts any source (an empty allow_cidrs means allow everything).",
+    "apply": "Merge into allow-list",
+    "applyN": "Merge {{count}}",
+    "decline": "Keep it open",
+    "declined": "Your choice is recorded; no further prompts.",
+    "confirmTitle": "Narrow this tunnel's sources?",
+    "confirmBody": "Only the {{count}} prefixes below will reach this tunnel; everything else is refused. Clients that have not shown up yet will be locked out and you will have to add their ranges by hand.",
+    "applied": "Merged {{count}} allow prefixes.",
+    "nothingNew": "Every checked source is already in the allow-list; nothing to add.",
+    "nothingSelected": "Check at least one — an empty allow-list means allow everything, which is not narrowing."
+  },
+  "notFound": "No tunnel with slug \"{{slug}}\" — it may have been renamed or deleted",
+  "backToList": "Back to tunnels"
+}

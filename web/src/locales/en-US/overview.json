@@ -1,0 +1,41 @@
+{
+  "title": "Overview",
+  "tile": {
+    "tunnels": "Tunnels up/down",
+    "agents": "Agents online",
+    "sessions": "Active sessions",
+    "throughput": "Throughput in/out",
+    "rtt": "Carrier RTT p50/p95",
+    "loss": "Loss",
+    "directRatio": "Direct ratio"
+  },
+  "tileTip": {
+    "rtt": "Computed from RTT histogram buckets — averaging p95 values is arithmetically wrong.",
+    "loss": "Measured carrier loss, not a retransmit rate.",
+    "directRatio": "Direct vs relayed sessions. This is the number that predicts your bandwidth bill."
+  },
+  "chart": {
+    "title": "Last 15 minutes · 1 Hz",
+    "rttP50": "RTT p50",
+    "rttP95": "RTT p95",
+    "rateIn": "In",
+    "rateOut": "Out",
+    "axisMs": "ms",
+    "axisMbps": "Mbps"
+  },
+  "events": {
+    "title": "Recent events",
+    "all": "All events",
+    "empty": "Open diagnostics",
+    "column": {
+      "at": "Time",
+      "kind": "Kind",
+      "detail": "Detail"
+    }
+  },
+  "totalBytes": "Cumulative in/out",
+  "empty": {
+    "title": "No tunnels yet",
+    "action": "Create the first tunnel"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "title": "代理端",
+  "count": "代理端（{{count}}）",
+  "column": {
+    "id": "代理端",
+    "version": "版本",
+    "platform": "OS / 架构",
+    "rung": "承载梯级",
+    "lastSeen": "最后活跃",
+    "actions": "操作",
+    "reported": "代理端自报丢弃"
+  },
+  "online": "在线",
+  "offline": "离线",
+  "revoked": "已撤销",
+  "rungUnknown": "未知",
+  "datagram": "支持数据报",
+  "noDatagram": "不支持数据报",
+  "action": {
+    "rotate": "轮换入网令牌",
+    "kick": "踢下线",
+    "revoke": "撤销凭据"
+  },
+  "kick": {
+    "title": "踢下线 {{id}}",
+    "warn": "连接会立刻断开，代理端随后会自己重连。承载的隧道在重连前不可用。"
+  },
+  "revoke": {
+    "title": "撤销 {{id}} 的凭据",
+    "warn": "撤销立即生效且不可回滚，该代理端必须用新令牌重新入网。记录会保留以便审计。"
+  },
+  "empty": {
+    "title": "还没有代理端",
+    "action": "生成入网命令"
+  },
+  "install": {
+    "title": "在目标机器上执行",
+    "oneliner": "一行安装",
+    "raw": "路由器 / 嵌入式（静态二进制）",
+    "printOnly": "只打印不执行",
+    "printOnlyHint": "任何 curl | sh 都该有的信任兜底：先看清它要做什么。",
+    "qr": "用手机扫",
+    "qrUnavailable": "当前地址外部不可达，二维码已隐藏",
+    "expires": "令牌 {{minutes}} 分钟后失效，且只能入网一个代理端。",
+    "checksum": "下载地址已固定，校验和随发布公布。"
+  },
+  "pairing": {
+    "action": "生成 Desktop 配对串",
+    "title": "Desktop 配对",
+    "create": "生成配对串",
+    "ttl": "有效期（秒）",
+    "listenPort": "Desktop 监听端口",
+    "note": "备注",
+    "string": "一次性配对串",
+    "qr": "二维码",
+    "expires": "配对串将于 {{time}} 过期",
+    "error": "生成 Desktop 配对串失败"
+  },
+  "waiting": "等待代理端上线…",
+  "connected": "已连接 {{host}}（{{os}}/{{arch}}）",
+  "reportedTip": "代理端自报（中继看不见这些）：拨号失败 {{dial}} · 策略否决 {{denied}} · 写本地失败 {{write}} · 发送队列满 {{queue}} · 重组超时 {{timeout}}。数据到达于 {{age}} 秒前"
+}

@@ -1,0 +1,74 @@
+# NomiRelay 中继的 systemd 单元。
+#
+# 安装：
+#   sudo useradd --system --no-create-home --shell /usr/sbin/nologin nomirelay
+#   sudo install -m 0755 nfrelay /usr/local/bin/
+#   sudo install -m 0644 deploy/nfrelay.service /etc/systemd/system/
+#   sudo systemctl daemon-reload && sudo systemctl enable --now nfrelay
+#
+# 加固项抄自 EasyTier 的 systemd 生成器（easytier/src/service_manager/mod.rs:225-256）
+# 的重启语义，但补上了它**缺少的**全部沙箱指令 —— 一个公网暴露的进程
+# 不该有能力写系统目录或提权。
+
+[Unit]
+Description=NomiRelay 通用网络中继器
+Documentation=https://github.com/nomifun/nomifun-net-infra
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=nomirelay
+Group=nomirelay
+
+# StateDirectory 让 systemd 自动创建 /var/lib/nomirelay 并设好属主。
+StateDirectory=nomirelay
+StateDirectoryMode=0700
+
+ExecStart=/usr/local/bin/nfrelay \
+    -data-dir /var/lib/nomirelay \
+    -bind 0.0.0.0:8443 \
+    -console 127.0.0.1:9443
+
+# 重启语义：永远重启、间隔 1 秒、**不设启动次数限制**。
+#
+# StartLimitIntervalSec=0 是刻意的：默认的启动限流会在反复失败后
+# 让 systemd 彻底放弃，而一台开机时网络还没就绪的机器正好会触发它 ——
+# 那等于把「暂时连不上」变成「永久下线」。
+Restart=always
+RestartSec=1
+StartLimitIntervalSec=0
+
+# 优雅关闭：给在途连接排空的时间，要比 -drain 的默认 30s 略长。
+KillSignal=SIGTERM
+TimeoutStopSec=45
+
+# ── 沙箱 ────────────────────────────────────────────────────────────────────
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictSUIDSGID=yes
+RestrictRealtime=yes
+RestrictNamespaces=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+# 只给绑定低端口的能力，其余全部剥掉。
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+
+# 用一个**真实数字**而不是 infinity：infinity 会关掉那道能提前发现
+# fd 泄漏的护栏，而 fd 泄漏正是中继这类程序最典型的故障。
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target

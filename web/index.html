@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>NomiRelay</title>
+    <!--
+      主题必须在首帧之前落定，否则浅色底会闪一下再变深色（FOUC）。
+      这段逻辑放在外部文件而不是内联脚本，因为控制台的 CSP 是
+      `default-src 'self'` 且没有单独放开 script-src（见 internal/console/server.go
+      的 contentSecurityPolicy），内联脚本会被直接拦掉。
+      外部同源脚本 + 阻塞式 classic script 同样在首帧前执行。
+      下面那个内联 <style> 是刻意留的例外：style-src 保留了 'unsafe-inline'。
+    -->
+    <script src="/theme-boot.js"></script>
+    <style>
+      html,
+      body,
+      #root {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+      body {
+        background: var(--color-bg-1);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

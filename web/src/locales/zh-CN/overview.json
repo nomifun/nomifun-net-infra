@@ -1,0 +1,41 @@
+{
+  "title": "概览",
+  "tile": {
+    "tunnels": "隧道 运行/停止",
+    "agents": "代理端 在线",
+    "sessions": "活跃会话",
+    "throughput": "吞吐 入/出",
+    "rtt": "承载 RTT p50/p95",
+    "loss": "丢包率",
+    "directRatio": "直连比"
+  },
+  "tileTip": {
+    "rtt": "从 RTT 直方图桶算出，不是「p95 的平均」——那在算术上是错的。",
+    "loss": "承载层实测丢包，不是重传率。",
+    "directRatio": "直连与经中继的会话比。这个数预测你的带宽账单。"
+  },
+  "chart": {
+    "title": "最近 15 分钟 · 1 Hz",
+    "rttP50": "RTT p50",
+    "rttP95": "RTT p95",
+    "rateIn": "入向",
+    "rateOut": "出向",
+    "axisMs": "ms",
+    "axisMbps": "Mbps"
+  },
+  "events": {
+    "title": "近期事件",
+    "all": "全部事件",
+    "empty": "打开诊断",
+    "column": {
+      "at": "时间",
+      "kind": "种类",
+      "detail": "说明"
+    }
+  },
+  "totalBytes": "累计 入/出",
+  "empty": {
+    "title": "还没有隧道",
+    "action": "新建第一条隧道"
+  }
+}

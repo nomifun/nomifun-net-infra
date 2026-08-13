@@ -1,0 +1,25 @@
+{
+  "title": "媒体中继",
+  "column": {
+    "credential": "凭据",
+    "relayed": "中继地址",
+    "peers": "对端数",
+    "bytes": "中继字节",
+    "ttl": "凭据 TTL",
+    "created": "创建时间"
+  },
+  "mint": {
+    "action": "签发浏览器凭据",
+    "label": "iceServers（直接喂给 RTCPeerConnection）",
+    "note": "有效期 {{ttl}}，{{at}} 过期。浏览器侧用 setConfiguration 刷新，不要长期缓存。"
+  },
+  "disabled": {
+    "title": "本中继未启用媒体中继（TURN）",
+    "action": "查看设置"
+  },
+  "empty": {
+    "title": "当前没有 TURN 分配",
+    "action": "新建 UDP 媒体隧道"
+  },
+  "note": "TURN 分配不是隧道对象：它不由控制台创建，所以单独一屏。计数来自我们自己的 RelayAddressGenerator —— pion/turn 既不暴露计数器也不能枚举分配。"
+}

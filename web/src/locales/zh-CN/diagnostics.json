@@ -1,0 +1,37 @@
+{
+  "title": "诊断",
+  "tab": {
+    "log": "实时日志",
+    "events": "事件",
+    "tools": "工具"
+  },
+  "log": {
+    "pause": "暂停",
+    "resume": "继续",
+    "clear": "清屏",
+    "level": "级别",
+    "empty": "等待日志…",
+    "rateLimited": "日志按速率限制推送，突发时会抽样。"
+  },
+  "events": {
+    "column": {
+      "at": "时间",
+      "level": "级别",
+      "kind": "种类",
+      "subject": "对象",
+      "message": "说明",
+      "actor": "操作者"
+    },
+    "empty": "还没有事件"
+  },
+  "selftest": {
+    "title": "自检",
+    "run": "运行自检",
+    "running": "自检中…"
+  },
+  "bundle": {
+    "title": "支持包",
+    "download": "下载支持包",
+    "note": "包含配置（已脱敏）、最近事件、版本与平台信息。不含密钥与令牌明文。"
+  }
+}
