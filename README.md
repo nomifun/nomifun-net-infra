@@ -1,5 +1,7 @@
 # NomiRelay
 
+（中文 | [English](README.en.md)）
+
 **通用网络中继器**：把家庭/工厂内网里的 HTTP、WebSocket、TCP、UDP 服务，
 经一台公网中继暴露给手机与 IoT 设备。
 
@@ -14,6 +16,23 @@
   发布阻断项、待办分级、以及每一条「看起来像缺陷其实是裁决」的理由与代价。
 - 设计规格：[`docs/superpowers/specs/2026-08-07-nomirelay-design.md`](docs/superpowers/specs/2026-08-07-nomirelay-design.md)（规范性文档）
 - 调研档案：[`docs/research/`](docs/research/) —— 16 份实读 frp/EasyTier 源码得出的设计输入
+
+## NomiFun 开源项目家族
+
+NomiRelay 是 [NomiFun Net Infra](https://github.com/nomifun/nomifun-net-infra)
+仓库中的核心服务，也是 NomiFun 四个关联开源项目中的网络基础设施层：
+
+| 项目 | 定位 | 产品与文档 |
+|---|---|---|
+| [NomiFun Desktop](https://github.com/nomifun/nomifun-desktop) | 本地数据、模型、Agent、伙伴、任务与工具的事实源和执行中枢 | [产品页](https://www.nomifun.com/zh/products/desktop/) · [文档](https://www.nomifun.com/zh/docs/) |
+| [NomiFun Mobile](https://github.com/nomifun/nomifun-mobile) | 通过 HTTP/WebSocket 使用 Desktop 能力的 Android、iOS 与 H5 随身客户端 | [产品页](https://www.nomifun.com/zh/products/mobile/) · [Relay 集成](https://github.com/nomifun/nomifun-mobile/blob/main/docs/RELAY-INTEGRATION.md) |
+| [NomiFun 小智云台](https://github.com/nomifun/nomifun-xiaozhi-yuntai) | 把语音、显示、舵机和设备 MCP 能力接入 Desktop 伙伴的 ESP32-S3 硬件端 | [产品页](https://www.nomifun.com/zh/products/xiaozhi-yuntai/) · [接入指南](https://www.nomifun.com/zh/docs/guides/xiaozhi-robot/) |
+| **NomiFun Net Infra（本仓库）** | 把 NAT 后的 Desktop、家庭或工厂服务提供给跨网络手机与 IoT 设备的自托管中继 | [产品页](https://www.nomifun.com/zh/products/net-infra/) · [门户接入文档](https://www.nomifun.com/zh/docs/guides/net-infra/) · [本仓接入文档](docs/integration/) |
+
+可信局域网内，Mobile 仍应优先直连 Desktop。跨网络访问时，部署者可自行运行
+`nfrelay`，在能访问 Desktop 的机器上运行 `nfagent`，再将 Mobile 指向 Relay 的
+**业务入口**。Mobile 不应持有 Relay 管理员密码、enrol token 或控制台 API 权限；
+Desktop 仍然是业务数据与执行中枢，NomiRelay 只承担网络转发、策略和可观察性。
 
 ## 目标场景
 
@@ -557,3 +576,12 @@ MIT，见 [LICENSE](LICENSE)。版权人 RiKa0-0 & NomiFun。
 
 依赖的许可不在本文件里逐条列出，用 `go list -m -json all` 或
 `cd web && bun pm ls` 自行核对 —— 抄一份清单进 README 只会过时。
+
+## 联系与交流
+
+- 官网与中英文产品文档：[https://www.nomifun.com](https://www.nomifun.com)
+- 问题反馈：[nomifun-net-infra Issues](https://github.com/nomifun/nomifun-net-infra/issues)
+- 联系邮箱：[535526063@qq.com](mailto:535526063@qq.com)
+- 微信交流群：请扫描下方二维码；二维码可能按群有效期更新，请以仓库最新图片为准。
+
+![NomiFun 微信交流群二维码](docs/assets/nomifun-wechat-group.jpg)
