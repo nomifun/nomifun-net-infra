@@ -2,6 +2,9 @@
 
 （中文 | [English](README.en.md)）
 
+源码仓库：[GitHub](https://github.com/nomifun/nomifun-net-infra) ·
+[Gitee（中国区镜像）](https://gitee.com/nomifun/nomifun-net-infra)
+
 **通用网络中继器**：把家庭/工厂内网里的 HTTP、WebSocket、TCP、UDP 服务，
 经一台公网中继暴露给手机与 IoT 设备。
 
@@ -19,15 +22,15 @@
 
 ## NomiFun 开源项目家族
 
-NomiRelay 是 [NomiFun Net Infra](https://github.com/nomifun/nomifun-net-infra)
+NomiRelay 是 NomiFun Net Infra（[GitHub](https://github.com/nomifun/nomifun-net-infra) · [Gitee](https://gitee.com/nomifun/nomifun-net-infra)）
 仓库中的核心服务，也是 NomiFun 四个关联开源项目中的网络基础设施层：
 
 | 项目 | 定位 | 产品与文档 |
 |---|---|---|
-| [NomiFun Desktop](https://github.com/nomifun/nomifun-desktop) | 本地数据、模型、Agent、伙伴、任务与工具的事实源和执行中枢 | [产品页](https://www.nomifun.com/zh/products/desktop/) · [文档](https://www.nomifun.com/zh/docs/) |
-| [NomiFun Mobile](https://github.com/nomifun/nomifun-mobile) | 通过 HTTP/WebSocket 使用 Desktop 能力的 Android、iOS 与 H5 随身客户端 | [产品页](https://www.nomifun.com/zh/products/mobile/) · [Relay 集成](https://github.com/nomifun/nomifun-mobile/blob/main/docs/RELAY-INTEGRATION.md) |
-| [NomiFun 小智云台](https://github.com/nomifun/nomifun-xiaozhi-yuntai) | 把语音、显示、舵机和设备 MCP 能力接入 Desktop 伙伴的 ESP32-S3 硬件端 | [产品页](https://www.nomifun.com/zh/products/xiaozhi-yuntai/) · [接入指南](https://www.nomifun.com/zh/docs/guides/xiaozhi-robot/) |
-| **NomiFun Net Infra（本仓库）** | 把 NAT 后的 Desktop、家庭或工厂服务提供给跨网络手机与 IoT 设备的自托管中继 | [产品页](https://www.nomifun.com/zh/products/net-infra/) · [门户接入文档](https://www.nomifun.com/zh/docs/guides/net-infra/) · [本仓接入文档](docs/integration/) |
+| NomiFun Desktop（[GitHub](https://github.com/nomifun/nomifun-desktop) · [Gitee](https://gitee.com/nomifun/nomifun-desktop)） | 本地数据、模型、Agent、伙伴、任务与工具的事实源和执行中枢 | [产品页](https://www.nomifun.com/zh/products/desktop/) · [文档](https://www.nomifun.com/zh/docs/) |
+| NomiFun Mobile（[GitHub](https://github.com/nomifun/nomifun-mobile) · [Gitee](https://gitee.com/nomifun/nomifun-mobile)） | 通过 HTTP/WebSocket 使用 Desktop 能力的 Android、iOS 与 H5 随身客户端 | [产品页](https://www.nomifun.com/zh/products/mobile/) · [Relay 集成](https://github.com/nomifun/nomifun-mobile/blob/main/docs/RELAY-INTEGRATION.md) |
+| NomiFun 小智云台（[GitHub](https://github.com/nomifun/nomifun-xiaozhi-yuntai) · [Gitee](https://gitee.com/nomifun/nomifun-xiaozhi-yuntai)） | 把语音、显示、舵机和设备 MCP 能力接入 Desktop 伙伴的 ESP32-S3 硬件端 | [产品页](https://www.nomifun.com/zh/products/xiaozhi-yuntai/) · [接入指南](https://www.nomifun.com/zh/docs/guides/xiaozhi-robot/) |
+| **NomiFun Net Infra**（本仓库；[GitHub](https://github.com/nomifun/nomifun-net-infra) · [Gitee](https://gitee.com/nomifun/nomifun-net-infra)） | 把 NAT 后的 Desktop、家庭或工厂服务提供给跨网络手机与 IoT 设备的自托管中继 | [产品页](https://www.nomifun.com/zh/products/net-infra/) · [门户接入文档](https://www.nomifun.com/zh/docs/guides/net-infra/) · [本仓接入文档](docs/integration/) |
 
 可信局域网内，Mobile 仍应优先直连 Desktop。跨网络访问时，部署者可自行运行
 `nfrelay`，在能访问 Desktop 的机器上运行 `nfagent`，再将 Mobile 指向 Relay 的

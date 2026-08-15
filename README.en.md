@@ -2,6 +2,9 @@
 
 (English | [中文](README.md))
 
+Source repository: [GitHub](https://github.com/nomifun/nomifun-net-infra) ·
+[Gitee (China mirror)](https://gitee.com/nomifun/nomifun-net-infra)
+
 **NomiRelay** is a general-purpose, self-hosted network relay. It exposes HTTP,
 WebSocket, TCP, and UDP services behind home or factory NAT to phones and IoT
 devices through infrastructure controlled by the operator.
@@ -21,15 +24,15 @@ limits explicit.
 ## The NomiFun open-source family
 
 NomiRelay is the core service in
-[NomiFun Net Infra](https://github.com/nomifun/nomifun-net-infra), the network
+NomiFun Net Infra ([GitHub](https://github.com/nomifun/nomifun-net-infra) · [Gitee](https://gitee.com/nomifun/nomifun-net-infra)), the network
 infrastructure layer in a family of four related open-source projects.
 
 | Project | Responsibility | Product and documentation |
 |---|---|---|
-| [NomiFun Desktop](https://github.com/nomifun/nomifun-desktop) | Local source of truth and execution hub for data, models, Agents, companions, tasks, and tools | [Product page](https://www.nomifun.com/products/desktop/) · [Docs](https://www.nomifun.com/docs/) |
-| [NomiFun Mobile](https://github.com/nomifun/nomifun-mobile) | Android, iOS, and H5 client that uses Desktop over HTTP/WebSocket | [Product page](https://www.nomifun.com/products/mobile/) · [Relay integration](https://github.com/nomifun/nomifun-mobile/blob/main/docs/RELAY-INTEGRATION.md) |
-| [NomiFun Xiaozhi Yuntai](https://github.com/nomifun/nomifun-xiaozhi-yuntai) | ESP32-S3 hardware surface that connects voice, display, motion, and device MCP tools to Desktop companions | [Product page](https://www.nomifun.com/products/xiaozhi-yuntai/) · [Integration guide](https://www.nomifun.com/docs/guides/xiaozhi-robot/) |
-| **NomiFun Net Infra (this repository)** | Self-hosted relay for reaching Desktop and other services behind NAT from phones and IoT devices across networks | [Product page](https://www.nomifun.com/products/net-infra/) · [Portal guide](https://www.nomifun.com/docs/guides/net-infra/) · [Repository docs](docs/integration/) |
+| NomiFun Desktop ([GitHub](https://github.com/nomifun/nomifun-desktop) · [Gitee](https://gitee.com/nomifun/nomifun-desktop)) | Local source of truth and execution hub for data, models, Agents, companions, tasks, and tools | [Product page](https://www.nomifun.com/products/desktop/) · [Docs](https://www.nomifun.com/docs/) |
+| NomiFun Mobile ([GitHub](https://github.com/nomifun/nomifun-mobile) · [Gitee](https://gitee.com/nomifun/nomifun-mobile)) | Android, iOS, and H5 client that uses Desktop over HTTP/WebSocket | [Product page](https://www.nomifun.com/products/mobile/) · [Relay integration](https://github.com/nomifun/nomifun-mobile/blob/main/docs/RELAY-INTEGRATION.md) |
+| NomiFun Xiaozhi Yuntai ([GitHub](https://github.com/nomifun/nomifun-xiaozhi-yuntai) · [Gitee](https://gitee.com/nomifun/nomifun-xiaozhi-yuntai)) | ESP32-S3 hardware surface that connects voice, display, motion, and device MCP tools to Desktop companions | [Product page](https://www.nomifun.com/products/xiaozhi-yuntai/) · [Integration guide](https://www.nomifun.com/docs/guides/xiaozhi-robot/) |
+| **NomiFun Net Infra** (this repository; [GitHub](https://github.com/nomifun/nomifun-net-infra) · [Gitee](https://gitee.com/nomifun/nomifun-net-infra)) | Self-hosted relay for reaching Desktop and other services behind NAT from phones and IoT devices across networks | [Product page](https://www.nomifun.com/products/net-infra/) · [Portal guide](https://www.nomifun.com/docs/guides/net-infra/) · [Repository docs](docs/integration/) |
 
 On a trusted LAN, Mobile should still connect directly to Desktop. Across
 networks, an operator can deploy `nfrelay`, run `nfagent` where it can reach
