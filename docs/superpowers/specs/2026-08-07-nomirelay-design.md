@@ -599,8 +599,8 @@ SQLite 打开参数：`WAL` + `synchronous=NORMAL` + `busy_timeout=5000` + `fore
 - **构建矩阵**：linux/{amd64,arm64,arm(GOARM=7/5),386,riscv64,loong64,mips,mipsle,mips64le}、
   windows/{amd64,arm64}、darwin/{amd64,arm64}、freebsd/amd64；mips 用 `GOMIPS=softfloat`。
   **MIPS 只构建 `nfagent`**（无 SQLite 移植）。
-- **构建门禁只有一个入口：本地 `make`**。`make check` = fmt+vet+lint+test。
-  **本仓不使用 GitHub Actions**（组织铁律）。
+- **完整检查入口：本地 `make check`**，覆盖 fmt+vet+lint+test；日常改动按范围运行
+  更小目标，发布前再执行完整检查。自动化形式不作仓库级硬限制。
 - **优雅关闭必须排空**：停止 accept → readiness 转红而 liveness 保持绿 →
   推 `Draining{deadline}` 控制帧让 agent 重拨 → 等 `min(deadline, 全连接关闭)` →
   `http.Server.Shutdown` → 关闭。默认 30s。frp 的服务端**从不排空**。
@@ -614,8 +614,8 @@ SQLite 打开参数：`WAL` + `synchronous=NORMAL` + `busy_timeout=5000` + `fore
 `make dist` 产出 `SHA256SUMS`，但它是在**构建同一台机器上**生成的，
 所以只防传输损坏、不防构建机被攻陷。
 
-**cosign 的 keyless 模式在本仓不可用**：它依赖 CI 提供的 OIDC 身份来签发短时证书，
-而本仓禁用 GitHub Actions（组织铁律），没有那个身份来源。
+当前发布路径没有配置可供 **cosign keyless** 使用的 CI OIDC 身份来签发短时证书，
+因此暂不采用该模式。
 
 因此签名走**离线密钥**：`make sign` 在一台与构建机分离的机器上用长期密钥对
 `SHA256SUMS` 做 detached 签名（minisign 或 cosign 的 `--key` 模式均可，

@@ -16,8 +16,8 @@
 #
 # 规格说「minisign 或 cosign 的 --key 模式均可，定版前需实测确认工具可用性」。
 # 实测结论：
-#   * cosign 的 **keyless 模式在本仓不可用** —— 它依赖 CI 提供的 OIDC 身份，
-#     而组织铁律禁用 GitHub Actions，没有那个身份来源。
+#   * 当前发布路径没有配置可供 cosign keyless 使用的 CI OIDC 身份，
+#     因此继续使用可离线保管的长期密钥。
 #   * minisign 与 cosign 都需要**用户**先装一个额外的工具才能验签。
 #     而 openssl 在几乎所有 Linux / macOS 上都已经在了 ——
 #     一个「要先装工具才能验」的签名，多数用户会直接跳过验证，

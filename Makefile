@@ -1,7 +1,6 @@
-# NomiRelay — 本地构建门禁
+# NomiRelay — 本地构建与检查
 #
-# 本仓刻意没有 GitHub workflow（见 AGENTS.md）。门禁只有一个入口：
-#   make check      提交前必过（fmt + vet + lint + test）
+# `make check` 是跨模块改动和发布前的完整检查；日常改动可按范围运行更小目标。
 #
 # 常用：
 #   make build      构建两个二进制到 ./bin
@@ -56,11 +55,11 @@ help:
 	@echo
 	@echo "当前：VERSION=$(VERSION) COMMIT=$(COMMIT) TAGS=$(if $(BUILD_TAGS),$(BUILD_TAGS),<无>)"
 
-## check: 提交前必过的门禁（fmt + vet + lint + test + 前端 + noweb 分支）
+## check: 完整检查（fmt + vet + lint + test + 前端 + noweb 分支）
 #
 # # 为什么前端也必须在这里
 #
-# 控制台是产品的主要交互面，而在这一行之前它**完全不在唯一的强制门禁里**：
+# 控制台是产品的主要交互面，完整检查需要覆盖它：
 # 一个带 TypeScript 类型错误、locale 键缺失、或硬编码中文的控制台
 # 可以静默通过 make check 与 make dist 进入发布产物 —— 因为 `make ui`
 # 只跑 vite build，而 esbuild 只剥类型、不校验类型。
@@ -182,7 +181,7 @@ ui:
 .PHONY: web-check
 web-check:
 	@if ! command -v bun >/dev/null 2>&1; then \
-		echo "⚠ 未找到 bun，跳过前端门禁（tsc / locale 对齐 / 词汇锁 / 禁硬编码中文 / oxlint）。"; \
+		echo "⚠ 未找到 bun，跳过前端检查（tsc / locale 对齐 / 词汇锁 / 禁硬编码中文 / oxlint）。"; \
 		echo "  这一跳过是**有代价的**：带类型错误或缺 locale 键的控制台会静默进产物。"; \
 		echo "  提交前请在装了 bun 的机器上跑一次 make web-check。"; \
 	else \

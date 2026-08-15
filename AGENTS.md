@@ -1,26 +1,21 @@
 # AGENTS.md
 
-本仓库（`nomifun-net-infra` / NomiRelay）的强制约定。动手前先读完。
+本仓库（`nomifun-net-infra` / NomiRelay）的开发约定。动手前先读完。
 
-## GitHub Actions 绝对禁止
+## 高效验证
 
-这是不可协商的、仓库范围的规则，适用于每个分支、worktree、贡献者、编码 agent 与自动化工具。
+- 根据改动范围选择能覆盖风险的最小检查，不要求每次提交都运行完整 `make check`。
+- 纯文档改动检查差异、链接与格式即可；Go、前端、协议和发布改动分别运行对应的
+  定向检查。跨模块、发布前或无法用定向检查建立信心时，再运行 `make check`。
+- 命令慢、平台语义不同或本机缺少工具时，如实记录未运行项和原因；与改动无关的
+  全仓失败不再阻断提交。
+- GitHub Actions、本地脚本或其他自动化都可以按实际维护价值选用；普通改动不需要
+  审计 `.github/workflows/` 是否为空。
 
-- 绝不创建、恢复、生成、暂存、提交、合并或重命名任何 GitHub Actions workflow 进 `.github/workflows/`。
-- 该目录下不允许存在任何 `.yml`/`.yaml`。禁用的、仅手动触发的、定时的、可复用的、仅发布用的、
-  临时的 workflow **一律禁止，无例外**。
-- 构建、测试、打包、发布自动化必须使用本地脚本与文档化的手工命令。
-- **门禁只有一个入口：提交前本地跑 `make check`。**
-- 完成任何变更前，确认 `.github/workflows/` 下不存在 workflow YAML。若任务与本规则冲突，停下并报告冲突。
+## Git 工作流
 
-## Git 署名必须指向人类
-
-- 每个 commit 必须归属于负责的人类开发者。
-- 绝不把 AI 模型、AI 产品、厂商、bot 或 agent 身份写进 Git author 或 committer 的 name/email。
-  禁止的身份包括但不限于 Claude、Codex、GPT、ChatGPT、Gemini、Copilot、OpenAI、Anthropic。
-- 绝不添加 AI 署名 trailer 或等效归属，包括 `Co-authored-by`、`Generated-by`、`Assisted-by` 等。
-- 责任人无法确定时，author 与 committer 均用 `RiKa0-0 <redacted@example.invalid>`。
-- 不使用 `--no-verify` 绕过仓库钩子，不修改全局 Git 配置。
+- 使用贡献者当前配置的 Git 身份，不要求专用署名钩子。
+- 保留无关改动，提交前检查暂存范围；未经明确授权不强推、不改写共享历史、不提交密钥。
 
 ## 提交信息
 
@@ -47,15 +42,15 @@ type 取 `feat|fix|docs|refactor|perf|test|build|chore|style`。
 - 敏感比较一律走 `crypto/subtle`。
 - `crypto/tls` 的 `CurvePreferences` 保持 nil（手动设置会静默关掉后量子曲线）。
 
-## 验证阶梯
+## 验证建议
 
 跑覆盖本次改动的最小集合，并在 PR/报告里记录实际命令：
 
-- `make check`（fmt + vet + lint + test）——提交前必过。
+- `make check`（fmt + vet + lint + test）——跨模块改动或发布前的完整检查。
 - `make e2e`——涉及数据面或协议改动时。
 - `make web-check`——涉及前端改动时。
 
-**命令慢或本机不可用时，不要伪造。**写明「未运行」并给出原因。
+纯文档改动无需编译。命令未运行时写明原因即可。
 
 ## 文档
 

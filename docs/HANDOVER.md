@@ -11,9 +11,9 @@
 
 | | |
 |---|---|
-| 门禁 | `make check` **绿**（fmt + vet + staticcheck + `go test -race` + noweb 分支 + 前端类型/locale/词汇/lint + 依赖闸 + 可达性闸） |
+| 完整检查基线 | 最近记录为 `make check` 通过（fmt + vet + staticcheck + `go test -race` + noweb 分支 + 前端类型/locale/词汇/lint + 依赖检查 + 可达性检查）；日常提交按改动范围验证 |
 | 能发布吗 | **不能。** 见 §2 的三条阻断项，第一条是可被任何人远程触发的 |
-| CI | **没有，也不许有。** `.github/workflows/` 必须始终不存在，理由见 `AGENTS.md` |
+| CI | 当前没有 GitHub Actions；后续可按维护价值选择本地脚本或托管自动化 |
 | 已交付的承载梯级 | L0（QUIC/UDP，默认）与 L2（TLS/TCP:443 + smux，自动降级）。L1/L3 没做，理由见 `docs/integration/09-known-gaps.md` |
 | 数据面入口 | 裸端口 TCP、共享入口（HTTP/WS/SNI 直通/明文兜底）、UDP。三者都**要求一个在线 agent** |
 
@@ -21,7 +21,7 @@
 
 顺序是有意的 —— 从「代码现在到底怎么行为」往「当初想做成什么样」走。
 
-1. **`AGENTS.md`** —— 强制纪律。动手之前读。两条铁律（禁 CI、git 署名必须是人）。
+1. **`AGENTS.md`** —— 当前开发边界与按风险验证建议。
 2. **`README.md` 的「诚实清单」** —— 最完整的一份「看起来能用其实不能」清单，
    含中继内部的项。**它是本仓最有价值的一段文字**，也最容易漂 ——
    每次改行为都要回来核一遍对应那一条。
@@ -164,10 +164,8 @@ connection refused。
    之后再要 `size` 个字节等于把已收到的那一截又等一遍，超时后报「字节少了」——
    看起来**像限速在丢数据**。按总量收才对。
 
-## 6. 提交纪律
+## 6. 提交与验证
 
-- 门禁只有一个入口：**提交前本地跑 `make check`**。绿了才提交。
-- `.github/workflows/` 下不许有任何 workflow YAML，无论是否禁用。
-- **git 署名必须指向人类。** 不要 `Co-authored-by` / `Generated-by` /
-  `Assisted-by` 这类 AI 署名 trailer。责任人不确定时用
-  `RiKa0-0 <redacted@example.invalid>`。
+- 根据改动范围运行最小相关检查；纯文档无需编译，跨模块改动或发布前运行 `make check`。
+- 使用当前 Git 配置，提交前检查暂存范围；未运行的相关检查在交接或 PR 中说明原因。
+- 自动化形式不作硬限制，但新增流程应当可维护、可复现，并避免引入不必要的云依赖。

@@ -103,15 +103,15 @@ carried over the reliable L2 fallback. See the
 ## Development
 
 ```bash
-make check       # required before commit: fmt + vet + lint + tests
+make check       # complete validation for cross-cutting changes and releases
 make e2e         # real relay + agent + backend on loopback
 make ui          # build the embedded web console
 make web-check   # frontend type and lint checks
 make dist        # cross-compile release artifacts and checksums
 ```
 
-The repository intentionally does not use GitHub Actions. See
-[AGENTS.md](AGENTS.md) for the repository contract.
+Match validation to the change: documentation-only edits do not need a build;
+targeted changes should use targeted checks before the full suite.
 
 ## Community
 

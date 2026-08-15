@@ -288,8 +288,8 @@ NomiRelay 让中继拥有 Tunnel 记录，但 agent 对**本地目标**保留一
 - **发布签名与一键安装**（`make sign` / `make verify` / `scripts/install.sh`）：
   Ed25519 detached 签名，私钥**只在离线机上**。用 openssl 而不是
   minisign / cosign —— 用户验签不需要装任何额外工具，而一个「要先装工具才能验」
-  的签名多数人会直接跳过，那等于没有签名。（cosign 的 keyless 模式在本仓
-  **不可用**：它依赖 CI 的 OIDC 身份，而组织铁律禁用 GitHub Actions。）
+  的签名多数人会直接跳过，那等于没有签名。（当前发布路径没有配置可供
+  cosign keyless 使用的 CI OIDC 身份，因此仍采用离线密钥。）
   安装脚本在**下载二进制之前**就验签，任何一步失败即中止且不留下已下载的文件；
   校验顺序是「先签名、再校验和」——反过来的话，一个替换了产物**并且**改了
   清单的发布会先通过校验和那一步
@@ -548,7 +548,7 @@ NomiRelay 让中继拥有 Tunnel 记录，但 agent 对**本地目标**保留一
 
 ```bash
 make help           # 列出全部目标
-make check          # 提交前必过：fmt + vet + lint + test + 依赖约束断言
+make check          # 跨模块改动或发布前的完整检查
 make e2e            # 端到端：真实 relay + agent + 后端服务跑在 loopback
 make fuzz           # 协议解析器 fuzz（默认各 30s）
 make ui             # 构建控制台前端到 web/dist
@@ -561,7 +561,7 @@ make keygen OUT=... # 生成一对发布签名密钥（在离线机上）
 
 前端开发时 `cd web && bun run dev`（5173 端口，`/api` 代理到中继）。
 
-`make check` 之外还有两组**不进门禁**的验证（太慢、要抢端口），
+`make check` 之外还有两组按需验证（较慢、会占用端口），
 但上面那份诚实清单里若干条断言的证据就是它们跑出来的：
 
 ```bash
@@ -576,8 +576,8 @@ python3 scripts/browser-smoke.py          # Firefox/WebDriver 真实渲染八节
 跑之前**先清残留的 nfrelay/nfagent 进程**，否则会连到一台陈旧的中继，
 症状与真实原因毫无关系。细节见 [`scripts/verify/README.md`](scripts/verify/README.md)。
 
-**本仓刻意没有 GitHub Actions**（见 [AGENTS.md](AGENTS.md)）。门禁只有一个入口：
-提交前本地跑 `make check`。
+验证应与改动范围匹配：纯文档改动无需编译，局部代码改动优先跑相关包或前端检查，
+跨模块改动与发布前再运行完整 `make check`。自动化形式不作仓库级硬限制。
 
 两个二进制的目标平台不同：`modernc.org/sqlite` 没有 MIPS 移植，所以 MIPS 路由器
 只能构建 `nfagent`。`make check` 会用 `go list -deps` 断言 agent 代码不依赖存储层——
