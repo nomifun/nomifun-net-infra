@@ -332,6 +332,6 @@ export const api = {
     }),
   /** 未实现：中继自检。 */
   selfTest: () => post<ProbeResult>('/api/diagnostics:selftest'),
-  /** 未实现：支持包下载。 */
+  /** 已实现：支持包下载（脱敏 JSON，见 internal/console/support.go）。 */
   supportBundleURL: () => '/api/diagnostics/support-bundle',
 };

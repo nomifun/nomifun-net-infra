@@ -13,7 +13,9 @@
 // 控制台**：中间件在用户名密码双空时放行一切（pkg/util/net/http.go:48），
 // 校验从不要求填凭据（validation/common.go:24-35），而 Complete() 又把地址
 // 覆盖成 0.0.0.0（server.go:117），README 还教 admin/admin。
-// 本实现拒绝在非 loopback 监听下使用空凭据启动，并强制首次登录改密。
+// 本实现拒绝在非 loopback 监听下使用空凭据启动。
+// （`must_rotate` 字段与会话里的改密页都存在，但 v1 没有任何路径把它置 1
+// ——「强制首次登录改密」当前不生效，见 docs/integration/03-api.md §3.4。）
 package console
 
 import (

@@ -292,5 +292,5 @@ key that never lives on the build host. frp ships only a checksum generated in t
 | `github.com/spf13/cobra` | v1.10.2 | CLI for both binaries; low-churn (note v1.10.2's yaml import move) |
 | `github.com/google/go-cmp` | unverified | Struct diffs in tests — confirm at implementation time |
 
-Frontend: see dossier 11 (parity with nomifun-tauri — React 19.2.8, Arco 2.66.16, unocss, swr 2.5.0, Vite 7.3.6,
+Frontend: see dossier 11 (parity with nomifun-desktop, the former nomifun-tauri — React 19.2.8, Arco 2.66.16, unocss, swr 2.5.0, Vite 7.3.6,
 TypeScript 5.x, i18next zh-CN primary, uPlot for RTT/loss panels, bun 1.3.14).

@@ -505,10 +505,10 @@ func (g *Gateway) proxyFor(t *tunnel.Tunnel) *httputil.ReverseProxy {
 	}
 
 	if !isIPLiteralOrLocalhost(backend) {
-		// 这不是致命错误（后端可能不是 nomifun-tauri），但必须说出来：
-		// nomifun-tauri 的 host guard 会 403 掉域名型 Host，而它挂在路由器之外，
+		// 这不是致命错误（后端可能不是 nomifun-desktop），但必须说出来：
+		// nomifun-desktop 的 host guard 会 403 掉域名型 Host，而它挂在路由器之外，
 		// 后端配置改不动。控制台应当在创建时就建议填 Router.HostRewrite。
-		g.log.Warn("网关改写出的 Host 不是 IP 字面量，若后端是 nomifun-tauri 会被 403",
+		g.log.Warn("网关改写出的 Host 不是 IP 字面量，若后端是 nomifun-desktop 会被 403",
 			"隧道", t.Slug, "host", backend, "建议", "给 router.host_rewrite 填 ip:port")
 	}
 
@@ -607,7 +607,7 @@ func (g *Gateway) transportFor(t *tunnel.Tunnel) *http.Transport {
 			return g.reg.limitsFor(t).throttle(ctx, c), nil
 		},
 
-		// 后端在隧道另一端，是明文 HTTP/1.1（nomifun-tauri 的 LAN 口就是），
+		// 后端在隧道另一端，是明文 HTTP/1.1（nomifun-desktop 的 LAN 口就是），
 		// 且 ReverseProxy 不实现 RFC 8441 的 WebSocket-over-h2，
 		// 所以刻意不尝试 HTTP/2 —— 那样 WS 会在 101 处失败。
 		ForceAttemptHTTP2:   false,

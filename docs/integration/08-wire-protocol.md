@@ -279,8 +279,8 @@ Go 里就是 `quicConn.ConnectionState().TLS.ExportKeyingMaterial("EXPORTER-nomi
 出处：`internal/udpflow/frame.go:43`（布局）与 `:196-209`（解析）。
 `HeaderSize = 16`，分片时 `FragHeaderSize = 20`。
 
-**`ver = 2`**（`udpflow/frame.go:78`）。**数据报帧头的版本与控制帧头的版本是
-两个独立的数**：控制帧是 1（`proto/frame.go:24`），数据报帧是 2。数据报这边跳到
+**`ver = 2`**（`internal/udpflow/frame.go:78`）。**数据报帧头的版本与控制帧头的版本是
+两个独立的数**：控制帧是 1（`internal/proto/frame.go:24`），数据报帧是 2。数据报这边跳到
 2 是因为 v1 的分片帧不带 `dgramID`，而少了它同一条流上两个等长报文交错到达会被
 **静默拼混** —— 那种损坏没法兼容，所以直接换号、老版本一律拒收。
 

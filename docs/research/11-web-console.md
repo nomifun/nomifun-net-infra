@@ -1,17 +1,19 @@
 # Dossier 11 — Web Console: Stack Selection and Product Design
 
-Sibling project verified on disk at `/home/rika/src/nomifun-tauri` (v0.4.1); all `ui/...` line numbers are
-from that checkout. Builds on Dossier 07 §8 (frp's enumerated console failures); those are not repeated.
+Sibling project verified on disk as nomifun-tauri v0.4.1 — now renamed and checked out at
+`../nomifun-desktop`; all `ui/...` line numbers are from the v0.4.1 checkout and may drift on
+newer versions. Builds on Dossier 07 §8 (frp's enumerated console failures); those are not repeated.
 
 ---
 
 ## PART A — Stack
 
-**Default to parity with nomifun-tauri; parity wins on almost everything.** One human maintains both, and
+**Default to parity with nomifun-desktop; parity wins on almost everything.** One human maintains both, and
 the cost of divergence is not "learning a library" but losing the *reflexes* — which Arco prop does
 server-side pagination, where the theme token lives, how a locale key gets typed. Parity is also copy-paste:
 `ui/uno.config.ts` (the Arco-CSS-var ↔ UnoCSS token bridge, ~200 lines with footguns already documented),
-`ui/src/renderer/index.html:23,45-48` (pre-paint `data-theme` + `arco-theme` pair, no FOUC),
+`ui/index.html:2,29-51` (pre-paint `data-theme` + `arco-theme` pair, no FOUC — moved up from
+`ui/src/renderer/index.html` after v0.4.1),
 `ui/src/renderer/main.tsx:29,84` (`ConfigProvider locale={zhCN}`), and the i18n key-parity machinery all
 transfer with zero design work. I deviate in exactly three places.
 
@@ -59,7 +61,7 @@ rules are cross-field and server-scoped (`allowPorts`, subdomain claims), and no
 class that bites is not type drift but *semantic* drift: the console accepts a port the relay later rejects,
 exactly frp's store-API defect (§3), surfacing as a tunnel in `error` phase instead of a 400. A generated zod
 schema would encode only the weak half of the rules while implying it encoded all. So `make gen-api-types`
-emits `ui/src/api/types.gen.ts` from the Go canonical structs, **committed** so `bun dev` never needs a Go
+emits `web/src/api/types.gen.ts` from the Go canonical structs, **committed** so `bun dev` never needs a Go
 toolchain; client-side zod is ergonomic only; and the authoritative check is a round trip —
 `POST /api/tunnels:validate` as a dry-run bound to submit, returning `[{path, code, message_zh,
 message_en}]` mapping onto Arco Form's `setFields`.
@@ -187,7 +189,7 @@ target**, two first-class paths side by side:
 - *有代理端* (S1): a one-liner carrying a **15-minute, single-use, enrol-one-agent token** —
   `curl -fsSL https://relay/install.sh | sh -s -- --token nf_enrol_…` — plus the raw static-binary form for
   routers (`wget` + `./nomifun-relay agent --token …`, viable because CGO_ENABLED=0), plus `--print-only` as
-  the trust affordance any `curl | sh` needs. **QR of the same token URL** for the phone/nomifun-tauri path:
+  the trust affordance any `curl | sh` needs. **QR of the same token URL** for the phone/nomifun-desktop path:
   reuse `qrcode.react ^4.2.0` *and* the reachability filter in
   `ui/src/renderer/components/layout/Sider/webuiQrLinks.ts`, which already rejects
   127/0.0.0.0/169.254/multicast/TEST-NET hosts — precisely the bug a naive QR ships with.

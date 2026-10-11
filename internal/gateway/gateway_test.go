@@ -52,7 +52,7 @@ func newGatewayFixtureWith(t *testing.T, online bool, mutate func(*GatewayConfig
 
 	f := &gwFixture{seen: make(chan *http.Request, 8), agentOnline: online}
 
-	// ── 后端：一个真实的 HTTP 服务，扮演家里的 nomifun-tauri LAN 口 ──────────
+	// ── 后端：一个真实的 HTTP 服务，扮演家里的 nomifun-desktop LAN 口 ──────────
 	backend := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clone := r.Clone(context.Background())
 		clone.Body = nil

@@ -13,9 +13,9 @@ import (
 //
 // # 为什么是「删除」而不是「透传」
 //
-// nomifun-tauri 从 X-Forwarded-For / X-Real-IP 取客户端 IP，取的是
+// nomifun-desktop（原 nomifun-tauri）从 X-Forwarded-For / X-Real-IP 取客户端 IP，取的是
 // `split(',').next()`，而且**没有可信代理白名单**
-// （nomifun-tauri/crates/backend/nomifun-auth/src/extract.rs:13-32）。
+// （nomifun-desktop/crates/backend/nomifun-auth/src/extract.rs:13-32）。
 // 也就是说后端把这些头的第一个值当权威客户端 IP 用。
 //
 // 于是只要中继做「列表追加」，公网上任何人都能先发一个

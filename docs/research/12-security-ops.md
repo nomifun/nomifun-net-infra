@@ -1,7 +1,7 @@
 # 12 — Threat model, security design, and operations for a public-facing relay
 
-Design input dossier. Evidence base: `/mnt/hgfs/share/net-infra/frp` (Go, v0.71.0), `/mnt/hgfs/share/net-infra/EasyTier` (Rust), and
-`/mnt/hgfs/share/net-infra/评估报告/02_frp_评估报告.md`. Every claim below is anchored to `file:line`.
+Design input dossier. Evidence base: `../net-infra/frp` (Go, v0.71.0) and `../net-infra/EasyTier` (Rust),
+both sibling checkouts. Every claim below is anchored to `file:line` in the two checkouts.
 
 Scenarios under judgement: **S1** phone (public internet) → HTTP/WS/UDP on a home desktop behind NAT; **S2** factory robot
 configured with only "relay IP + port" → designated remote desktop, zero client software on the robot.
@@ -46,9 +46,9 @@ signed by the agent key. Never accept a client-chosen session ID without re-proo
 
 ### A2. The S2 "bare public port, no application-layer auth" problem
 
-The frp evaluation report names this precisely: 「frp 在 `remotePort` 上是**裸端口开放**，谁都能连」and the only hook,
-`NewUserConn`, 「只能放行/拒绝，拿不到应用层凭据」(`02_frp_评估报告.md:126`; it costs frp 7% of the S2 score at `:136`).
-The code confirms it. `pkg/plugin/server/types.go:66-71` — `NewUserConnContent{User, ProxyName, ProxyType, RemoteAddr}`.
+A frp `remotePort` listener is a **bare public port — anyone who can route to it can connect**, and the
+only admission hook, `NewUserConn`, can allow/deny but never sees application-layer credentials.
+`pkg/plugin/server/types.go:66-71` — `NewUserConnContent{User, ProxyName, ProxyType, RemoteAddr}`.
 That is the entire decision input, and it is consumed at `server/proxy/proxy.go:275-285` before any bytes are read. There
 is **no source-CIDR facility at all**: a repo-wide grep for `allowlist|whitelist|allowIP|sourceIP|CIDR` returns only
 `pkg/vnet/*`, `pkg/nathole/utils.go:56` and test names. `secretKey`/`allowUsers` exist only on stcp/xtcp/sudp

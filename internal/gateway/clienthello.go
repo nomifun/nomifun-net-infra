@@ -27,7 +27,7 @@ var ErrNoClientHello = errors.New("gateway: 没能从首包里解析出 ClientHe
 //
 // # 手法来源与为什么它是对的
 //
-// 抄自 frp（Apache-2.0）：/mnt/hgfs/share/net-infra/frp/pkg/util/vhost/https.go:39-90。
+// 抄自 frp（Apache-2.0）：../net-infra/frp/pkg/util/vhost/https.go:39-90。
 // 那里的 readClientHello（:53-71）构造一个假的 readOnlyConn（:79-90，Write 直接
 // 返回 io.ErrClosedPipe，所以一个字节都不会流出去），交给 tls.Server，
 // 在 GetConfigForClient 回调里把 *tls.ClientHelloInfo 抄走，然后无视那个

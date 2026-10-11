@@ -7,7 +7,8 @@
   先读理由。
 - **已知代价** —— 某个决定的副作用，暂时接受。
 
-`README.md` 的「诚实清单」是更完整的一份（含中继内部的项）；这里只列**对接方会碰到**的。
+含中继内部实现项的更完整清单在根目录 [`BACKLOG.md`](../../BACKLOG.md)；旧 README 里的
+「诚实清单」未随文档精简迁入，原稿可从 Git 历史找回。这里只列**对接方会碰到**的。
 
 本章若干条断言可以自己复核 —— `scripts/verify/` 下的脚本会真起 `nfrelay` + `nfagent`
 打真流量，见 [`scripts/verify/README.md`](../../scripts/verify/README.md)。
@@ -27,7 +28,8 @@
 
 ### 没有 `openapi.json`
 
-规格 §8.5（`make openapi` / `make api-diff` / `make gen-api-types`）把它规定成
+旧设计规格 §8.5（规格已随文档精简移除，见 Git 历史）曾用
+`make openapi` / `make api-diff` / `make gen-api-types` 把它规定成
 「供第三方与 CLI 消费」并要求一个漂移门禁，三个 make 目标都不存在。当前唯一的端点清单是本文档与手写的 `web/src/api/client.ts`
 （后者曾经漂过：调过三个后端从未注册的端点）。
 
