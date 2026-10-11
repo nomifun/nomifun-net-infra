@@ -48,11 +48,19 @@ export default function Overview(): React.JSX.Element {
 
   if (snapshot && snapshot.tunnels.length === 0) {
     return (
-      <EmptyAction
-        title={t('overview:empty.title')}
-        actionLabel={t('overview:empty.action')}
-        onAction={() => void navigate('/tunnels/new')}
-      />
+      <div className="flex flex-col gap-16px">
+        <Card title={t('overview:desktop.title')}>
+          <p className="text-2">{t('overview:desktop.description')}</p>
+          <Button type="primary" onClick={() => void navigate('/desktop-connect')}>
+            {t('overview:desktop.action')}
+          </Button>
+        </Card>
+        <EmptyAction
+          title={t('overview:empty.title')}
+          actionLabel={t('overview:empty.action')}
+          onAction={() => void navigate('/tunnels/new')}
+        />
+      </div>
     );
   }
 
@@ -60,6 +68,14 @@ export default function Overview(): React.JSX.Element {
 
   return (
     <div className="flex flex-col gap-16px">
+      <Card size="small" title={t('overview:desktop.title')}>
+        <div className="flex items-center justify-between gap-16px">
+          <span className="text-2">{t('overview:desktop.description')}</span>
+          <Button type="primary" onClick={() => void navigate('/desktop-connect')}>
+            {t('overview:desktop.action')}
+          </Button>
+        </div>
+      </Card>
       <div className="flex flex-wrap gap-12px">
         <StatTile
           label={t('overview:tile.tunnels')}

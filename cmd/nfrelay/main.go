@@ -63,7 +63,10 @@ func run() error {
 			"声明控制台前面有做了 TLS 终止的反代；会给会话 Cookie 加 Secure 与 __Host- 前缀")
 		desktopBusinessURL = flag.String("desktop-business-url", "",
 			"Desktop 最终交给 Mobile 的稳定 HTTP(S) 业务入口（例如 https://desktop.example.com）；留空使用独立隧道端口")
-		drainWait = flag.Duration("drain", 30*time.Second, "优雅关闭的排空上限")
+		desktopBootstrapURL = flag.String("desktop-bootstrap-url", "", "显式公共 Desktop bootstrap URL（https://relay.example.com:9444/api/bootstrap/desktop/v2）")
+		desktopDevInsecure  = flag.Bool("desktop-dev-insecure", false, "仅本机集成测试：允许 loopback HTTP Desktop 接入")
+		desktopDevEnrolTTL  = flag.Duration("desktop-dev-enrol-ttl", console.DefaultEnrolTTL, "仅本机集成测试：短时 Desktop v2 入网 TTL（需 -desktop-dev-insecure）")
+		drainWait           = flag.Duration("drain", 30*time.Second, "优雅关闭的排空上限")
 
 		sharedAddr = flag.String("shared", "",
 			"共享入口监听地址（gateway 模式与 SNI 路由，例如 0.0.0.0:443）；留空则不启用")
@@ -168,6 +171,15 @@ func run() error {
 
 	rt := newRuntime(ctx, db, log, version, advertised, pin)
 	rt.setDesktopBusinessURL(*desktopBusinessURL)
+	if err := validateDesktopBootstrapURL(*desktopBootstrapURL, *desktopDevInsecure); err != nil {
+		return err
+	}
+	rt.desktopBootstrapURL = strings.TrimRight(*desktopBootstrapURL, "/")
+	rt.desktopDevInsecure = *desktopDevInsecure
+	if *desktopDevEnrolTTL < time.Second || *desktopDevEnrolTTL > console.DefaultEnrolTTL || (!*desktopDevInsecure && *desktopDevEnrolTTL != console.DefaultEnrolTTL) {
+		return errors.New("-desktop-dev-enrol-ttl 仅测试模式可缩短，范围为 1 秒到 15 分钟")
+	}
+	rt.desktopEnrolTTL = *desktopDevEnrolTTL
 
 	// ACME。
 	//

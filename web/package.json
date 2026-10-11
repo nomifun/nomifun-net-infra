@@ -6,11 +6,12 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "bun run check:types && bun run check:locales && bun run check:vocab && bun run check:no-cjk && bun run lint",
+    "check": "bun run check:types && bun run check:locales && bun run check:vocab && bun run check:no-cjk && bun run check:desktop-pairing && bun run lint",
     "check:types": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
     "check:locales": "bun scripts/check-locales.mjs",
     "check:vocab": "bun scripts/check-vocabulary.mjs",
     "check:no-cjk": "bun scripts/check-no-hardcoded-cjk.mjs",
+    "check:desktop-pairing": "bun scripts/check-desktop-pairing.mjs",
     "lint": "oxlint --deny-warnings src scripts"
   },
   "dependencies": {

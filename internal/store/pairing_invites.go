@@ -24,30 +24,38 @@ import (
 // CreatePairingInvite ??????????Backend ?????????
 // Desktop ?????????????????? provisioning ???? SSRF?
 type PairingInvite struct {
-	ID             string         `json:"id"`
-	TenantID       string         `json:"tenant_id"`
-	Scopes         []string       `json:"scopes"`
-	Backend        tunnel.Backend `json:"backend"`
-	PublicHostname string         `json:"public_hostname,omitempty"`
-	PublicPort     uint16         `json:"public_port,omitempty"`
-	TLS            tunnel.TLSMode `json:"tls"`
-	CreatedAt      time.Time      `json:"created_at"`
-	ExpiresAt      time.Time      `json:"expires_at"`
-	UsedAt         time.Time      `json:"used_at,omitzero"`
-	UsedBy         string         `json:"used_by,omitempty"`
-	Note           string         `json:"note,omitempty"`
+	ID               string         `json:"id"`
+	TenantID         string         `json:"tenant_id"`
+	Scopes           []string       `json:"scopes"`
+	Backend          tunnel.Backend `json:"backend"`
+	PublicHostname   string         `json:"public_hostname,omitempty"`
+	PublicPort       uint16         `json:"public_port,omitempty"`
+	TLS              tunnel.TLSMode `json:"tls"`
+	BootstrapVersion int            `json:"bootstrap_version,omitempty"`
+	BusinessURL      string         `json:"business_url,omitempty"`
+	CreatedAt        time.Time      `json:"created_at"`
+	ExpiresAt        time.Time      `json:"expires_at"`
+	UsedAt           time.Time      `json:"used_at,omitzero"`
+	UsedBy           string         `json:"used_by,omitempty"`
+	EnrolExpiresAt   time.Time      `json:"enrol_expires_at,omitzero"`
+	RevokedAt        time.Time      `json:"revoked_at,omitzero"`
+	AgentID          string         `json:"agent_id,omitempty"`
+	TunnelID         string         `json:"tunnel_id,omitempty"`
+	Note             string         `json:"note,omitempty"`
 }
 
 // PairingInviteSpec ????????????????
 type PairingInviteSpec struct {
-	TenantID       string
-	Scopes         []string
-	Backend        tunnel.Backend
-	PublicHostname string
-	PublicPort     uint16
-	TLS            tunnel.TLSMode
-	TTL            time.Duration
-	Note           string
+	TenantID         string
+	Scopes           []string
+	Backend          tunnel.Backend
+	PublicHostname   string
+	PublicPort       uint16
+	TLS              tunnel.TLSMode
+	BootstrapVersion int
+	BusinessURL      string
+	TTL              time.Duration
+	Note             string
 }
 
 // PairingInviteRedeemRequest ? Desktop ???????????????
@@ -68,11 +76,17 @@ var (
 	ErrPairingInviteScopeDenied     = errors.New("store: pairing invite scope ?????")
 	ErrPairingInviteBackendMismatch = errors.New("store: pairing invite backend ?????")
 	ErrPairingInviteTenantMismatch  = errors.New("store: pairing invite tenant ?????")
+	ErrPairingInviteVersionMismatch = errors.New("store: pairing invite bootstrap version mismatch")
+	ErrDesktopConnectionRevoked     = errors.New("store: desktop connection revoked")
+	ErrDesktopEnrolExpired          = errors.New("store: desktop enrol token expired before enrolment")
 )
 
 // CreatePairingInvite ???????? Desktop ????????? token
 // ??? token ????????? token ??????????? invite URL?
 func (d *DB) CreatePairingInvite(ctx context.Context, spec PairingInviteSpec) (string, *PairingInvite, error) {
+	if spec.BootstrapVersion == 0 {
+		spec.BootstrapVersion = 1
+	}
 	if err := validatePairingInviteSpec(spec); err != nil {
 		return "", nil, err
 	}
@@ -97,25 +111,29 @@ func (d *DB) CreatePairingInvite(ctx context.Context, spec PairingInviteSpec) (s
 	_, err = d.write.ExecContext(ctx, `
 		INSERT INTO pairing_invites (
 			id, token_hash, tenant_id, scopes_json, backend_json,
-			public_hostname, public_port, tls_mode, created_at, expires_at, note
-		) VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+			public_hostname, public_port, tls_mode, created_at, expires_at, note,
+			bootstrap_version, business_url
+		) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 		id, tokenHash, spec.TenantID, string(scopesJSON), string(backendJSON),
-		spec.PublicHostname, spec.PublicPort, string(spec.TLS), ts, expiresAt, spec.Note)
+		spec.PublicHostname, spec.PublicPort, string(spec.TLS), ts, expiresAt, spec.Note,
+		spec.BootstrapVersion, spec.BusinessURL)
 	if err != nil {
 		return "", nil, fmt.Errorf("store: ?? pairing invite ???%w", err)
 	}
 
 	return plain, &PairingInvite{
-		ID:             id,
-		TenantID:       spec.TenantID,
-		Scopes:         scopes,
-		Backend:        spec.Backend,
-		PublicHostname: spec.PublicHostname,
-		PublicPort:     spec.PublicPort,
-		TLS:            spec.TLS,
-		CreatedAt:      time.Unix(ts, 0),
-		ExpiresAt:      time.Unix(expiresAt, 0),
-		Note:           spec.Note,
+		ID:               id,
+		TenantID:         spec.TenantID,
+		Scopes:           scopes,
+		Backend:          spec.Backend,
+		PublicHostname:   spec.PublicHostname,
+		PublicPort:       spec.PublicPort,
+		TLS:              spec.TLS,
+		BootstrapVersion: spec.BootstrapVersion,
+		BusinessURL:      spec.BusinessURL,
+		CreatedAt:        time.Unix(ts, 0),
+		ExpiresAt:        time.Unix(expiresAt, 0),
+		Note:             spec.Note,
 	}, nil
 }
 
@@ -148,37 +166,24 @@ func (d *DB) RedeemPairingInvite(
 	}
 	defer tx.Rollback()
 
-	var invite PairingInvite
-	var scopesJSON, backendJSON, tlsMode string
-	var createdAt, expiresAt int64
-	var usedAt sql.NullInt64
-	var usedBy sql.NullString
-	err = tx.QueryRowContext(ctx, `
-		SELECT id, tenant_id, scopes_json, backend_json, public_hostname,
-		       public_port, tls_mode, created_at, expires_at, used_at, used_by, note
-		FROM pairing_invites WHERE token_hash = ?`, hashToken(plainToken)).
-		Scan(&invite.ID, &invite.TenantID, &scopesJSON, &backendJSON,
-			&invite.PublicHostname, &invite.PublicPort, &tlsMode, &createdAt,
-			&expiresAt, &usedAt, &usedBy, &invite.Note)
-	if errors.Is(err, sql.ErrNoRows) {
-		return nil, ErrNotFound
-	}
+	invite, err := scanPairingInvite(tx.QueryRowContext(ctx,
+		pairingInviteSelect+` WHERE token_hash = ?`, hashToken(plainToken)))
 	if err != nil {
-		return nil, fmt.Errorf("store: ?? pairing invite ???%w", err)
+		return nil, err
 	}
-	if usedAt.Valid {
+	if invite.BootstrapVersion != 1 {
+		return nil, ErrPairingInviteVersionMismatch
+	}
+	if !invite.UsedAt.IsZero() {
 		return nil, ErrPairingInviteUsed
 	}
 
 	ts := now()
-	if ts > expiresAt {
+	if ts > invite.ExpiresAt.Unix() {
 		return nil, ErrPairingInviteExpired
 	}
 	if invite.TenantID != req.TenantID {
 		return nil, ErrPairingInviteTenantMismatch
-	}
-	if err := decodePairingInviteFields(&invite, scopesJSON, backendJSON, tlsMode, createdAt, expiresAt); err != nil {
-		return nil, err
 	}
 	if !scopesContain(invite.Scopes, req.Scopes) {
 		return nil, ErrPairingInviteScopeDenied
@@ -215,32 +220,53 @@ func (d *DB) RedeemPairingInvite(
 	if err := tx.Commit(); err != nil {
 		return nil, fmt.Errorf("store: ?? pairing invite ?????%w", err)
 	}
-	return &invite, nil
+	return invite, nil
 }
 
 const pairingInviteSelect = `
 	SELECT id, tenant_id, scopes_json, backend_json, public_hostname,
-	       public_port, tls_mode, created_at, expires_at, used_at, used_by, note
+	       public_port, tls_mode, created_at, expires_at, used_at, used_by, note,
+	       bootstrap_version, business_url, attempt_hash, control_hash,
+	       enrol_token_hash, enrol_expires_at, revoked_at
 	FROM pairing_invites`
 
 func scanPairingInvite(sc rowScanner) (*PairingInvite, error) {
+	record, err := scanPairingInviteRecord(sc)
+	if err != nil {
+		return nil, err
+	}
+	return &record.PairingInvite, nil
+}
+
+type pairingInviteRecord struct {
+	PairingInvite
+	attemptHash    string
+	controlHash    string
+	enrolTokenHash string
+}
+
+func scanPairingInviteRecord(sc rowScanner) (*pairingInviteRecord, error) {
 	var (
-		invite                       PairingInvite
+		record                       pairingInviteRecord
 		scopesJSON, backendJSON, tls string
 		createdAt, expiresAt         int64
 		usedAt                       sql.NullInt64
 		usedBy                       sql.NullString
+		enrolExpiresAt, revokedAt    sql.NullInt64
 	)
+	invite := &record.PairingInvite
 	err := sc.Scan(&invite.ID, &invite.TenantID, &scopesJSON, &backendJSON,
 		&invite.PublicHostname, &invite.PublicPort, &tls, &createdAt, &expiresAt,
-		&usedAt, &usedBy, &invite.Note)
+		&usedAt, &usedBy, &invite.Note, &invite.BootstrapVersion, &invite.BusinessURL,
+		&record.attemptHash, &record.controlHash, &record.enrolTokenHash,
+		&enrolExpiresAt, &revokedAt)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, ErrNotFound
 	}
 	if err != nil {
 		return nil, fmt.Errorf("store: ?? pairing invite ???%w", err)
 	}
-	if err := decodePairingInviteFields(&invite, scopesJSON, backendJSON, tls, createdAt, expiresAt); err != nil {
+	if err := decodePairingInviteFields(invite, scopesJSON, backendJSON, tls, createdAt, expiresAt); err != nil {
 		return nil, err
 	}
 	if usedAt.Valid {
@@ -249,7 +275,20 @@ func scanPairingInvite(sc rowScanner) (*PairingInvite, error) {
 	if usedBy.Valid {
 		invite.UsedBy = usedBy.String
 	}
-	return &invite, nil
+	if enrolExpiresAt.Valid {
+		invite.EnrolExpiresAt = time.Unix(enrolExpiresAt.Int64, 0)
+	}
+	if revokedAt.Valid {
+		invite.RevokedAt = time.Unix(revokedAt.Int64, 0)
+	}
+	if record.enrolTokenHash != "" {
+		if len(record.enrolTokenHash) != 64 {
+			return nil, errors.New("store: invalid desktop enrol token hash")
+		}
+		invite.AgentID = "agent-" + record.enrolTokenHash[:12]
+		invite.TunnelID = DesktopTunnelID(invite.ID)
+	}
+	return &record, nil
 }
 
 func decodePairingInviteFields(
@@ -270,6 +309,12 @@ func decodePairingInviteFields(
 }
 
 func validatePairingInviteSpec(spec PairingInviteSpec) error {
+	if spec.BootstrapVersion != 1 && spec.BootstrapVersion != 2 {
+		return ErrPairingInviteVersionMismatch
+	}
+	if spec.BootstrapVersion == 2 && strings.TrimSpace(spec.BusinessURL) == "" {
+		return errors.New("store: v2 desktop invite requires a business URL")
+	}
 	if strings.TrimSpace(spec.TenantID) == "" {
 		return errors.New("store: pairing invite tenant ????")
 	}

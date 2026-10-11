@@ -322,6 +322,12 @@ func (rt *runtime) Settings() []console.SettingsGroup {
 	}
 
 	return []console.SettingsGroup{
+		{Group: "desktop", Items: []console.SettingItem{
+			{Key: "desktop_bootstrap_url", Value: rt.desktopBootstrapURL, Provenance: env, SourceRef: "-desktop-bootstrap-url；必须显式配置", Editable: false},
+			{Key: "desktop_default_business_url", Value: rt.desktopBusinessURL, Provenance: env, SourceRef: "-desktop-business-url；邀请可选择独立公开域名", Editable: false},
+			{Key: "desktop_dev_insecure", Value: strconv.FormatBool(rt.desktopDevInsecure), Provenance: env, SourceRef: "-desktop-dev-insecure；仅本机 HTTP 测试", Editable: false},
+			{Key: "desktop_v2_backend", Value: console.DesktopBackendAddrV2, Provenance: def, SourceRef: "Desktop v2 专用回环监听器", Editable: false},
+		}},
 		{Group: "listeners", Items: listeners},
 		{Group: "tls", Items: tlsItems},
 		{Group: "auth", Items: auth},

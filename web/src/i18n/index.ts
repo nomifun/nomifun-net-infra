@@ -15,6 +15,7 @@ import zhAgents from '../locales/zh-CN/agents.json';
 import zhAuth from '../locales/zh-CN/auth.json';
 import zhCommon from '../locales/zh-CN/common.json';
 import zhDiagnostics from '../locales/zh-CN/diagnostics.json';
+import zhDesktop from '../locales/zh-CN/desktop.json';
 import zhErrors from '../locales/zh-CN/errors.json';
 import zhMedia from '../locales/zh-CN/media.json';
 import zhOverview from '../locales/zh-CN/overview.json';
@@ -27,6 +28,7 @@ import enAgents from '../locales/en-US/agents.json';
 import enAuth from '../locales/en-US/auth.json';
 import enCommon from '../locales/en-US/common.json';
 import enDiagnostics from '../locales/en-US/diagnostics.json';
+import enDesktop from '../locales/en-US/desktop.json';
 import enErrors from '../locales/en-US/errors.json';
 import enMedia from '../locales/en-US/media.json';
 import enOverview from '../locales/en-US/overview.json';
@@ -46,6 +48,7 @@ export const resources = {
     agents: zhAgents,
     setup: zhSetup,
     diagnostics: zhDiagnostics,
+    desktop: zhDesktop,
     settings: zhSettings,
     media: zhMedia,
     errors: zhErrors,
@@ -59,6 +62,7 @@ export const resources = {
     agents: enAgents,
     setup: enSetup,
     diagnostics: enDiagnostics,
+    desktop: enDesktop,
     settings: enSettings,
     media: enMedia,
     errors: enErrors,

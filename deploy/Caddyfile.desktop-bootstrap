@@ -1,0 +1,34 @@
+{
+	auto_https disable_redirects
+}
+
+https://{$RELAY_HOST}:9444 {
+	tls {
+		issuer acme {
+			email {$ACME_EMAIL}
+			# Port 443 belongs to nfrelay's shared gateway and L2 carrier.
+			disable_tlsalpn_challenge
+		}
+	}
+
+	@bootstrap {
+		method POST
+		path /api/bootstrap/desktop/v2 /api/bootstrap/desktop/v2:cancel
+	}
+	handle @bootstrap {
+		reverse_proxy nfrelay:9443
+	}
+
+	@connection {
+		method GET DELETE
+		path /api/desktop-connections/*
+	}
+	handle @connection {
+		reverse_proxy nfrelay:9443
+	}
+
+	# The public bootstrap server does not publish login, invites, or the console.
+	handle {
+		respond 404
+	}
+}

@@ -22,6 +22,23 @@ import (
 // 冲突（slug 重复、入口端口被占）返回 ErrConflict，映射到 HTTP 409。
 // 这一点很重要：frp 的 store 会按名字**静默覆盖**，那种沉默覆盖在排障时极难发现。
 func (d *DB) PutTunnel(ctx context.Context, t *tunnel.Tunnel) error {
+	tx, err := d.write.BeginTx(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("store: 开启隧道写入事务失败：%w", err)
+	}
+	defer tx.Rollback()
+	if err := putTunnelTx(ctx, tx, t); err != nil {
+		return err
+	}
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("store: 提交隧道写入事务失败：%w", err)
+	}
+	return nil
+}
+
+// putTunnelTx shares the serialized short-ID allocation with Desktop provisioning.
+// The lookup, allocation and write must use the same writer transaction.
+func putTunnelTx(ctx context.Context, tx *sql.Tx, t *tunnel.Tunnel) error {
 	t.Complete()
 	if err := t.Validate(); err != nil {
 		return err
@@ -59,14 +76,14 @@ func (d *DB) PutTunnel(ctx context.Context, t *tunnel.Tunnel) error {
 	//     但返回给用户的 diff 与对象里带的是文档指定的号。
 	//
 	// 把决定权收回存储层，两个口子一起没了，而上面那句注释也才真正成立。
-	cur, err := d.shortIDOf(ctx, t.ID)
+	cur, err := shortIDOfTx(ctx, tx, t.ID)
 	if err != nil {
 		return err
 	}
 	if cur != 0 {
 		t.ShortID = cur
 	} else {
-		id, err := d.allocShortID(ctx, t.TenantID)
+		id, err := allocShortIDTx(ctx, tx, t.TenantID)
 		if err != nil {
 			return err
 		}
@@ -74,7 +91,7 @@ func (d *DB) PutTunnel(ctx context.Context, t *tunnel.Tunnel) error {
 	}
 
 	ts := now()
-	_, err = d.write.ExecContext(ctx, `
+	_, err = tx.ExecContext(ctx, `
 		INSERT INTO tunnels (
 			id, tenant_id, slug, kind, tls_mode, exposure, l4, agent_id,
 			listen_port, short_id, router_json, policy_json, backend_json,
@@ -107,16 +124,16 @@ func (d *DB) PutTunnel(ctx context.Context, t *tunnel.Tunnel) error {
 	return nil
 }
 
-// shortIDOf 读一条隧道当前的短标识，行不存在时回 0。
+// shortIDOfTx 读一条隧道当前的短标识，行不存在时回 0。
 //
 // 按 ID 查而不是按 slug：PutTunnel 的冲突键是 id，两者必须一致，
 // 否则一次「改 slug」的更新会被当成新隧道去分配新号。
-func (d *DB) shortIDOf(ctx context.Context, id string) (uint16, error) {
+func shortIDOfTx(ctx context.Context, tx *sql.Tx, id string) (uint16, error) {
 	if id == "" {
 		return 0, nil
 	}
 	var got uint16
-	err := d.read.QueryRowContext(ctx,
+	err := tx.QueryRowContext(ctx,
 		`SELECT short_id FROM tunnels WHERE id = ?`, id).Scan(&got)
 	if errors.Is(err, sql.ErrNoRows) {
 		return 0, nil
@@ -134,14 +151,14 @@ func (d *DB) shortIDOf(ctx context.Context, id string) (uint16, error) {
 // 是比拒绝创建严重得多的故障。
 var ErrShortIDExhausted = errors.New("store: 隧道短标识已用尽（上限 65535）")
 
-// allocShortID 取一个租户内最小的可用短标识。
+// allocShortIDTx 取一个租户内最小的可用短标识。
 //
 // 「最小可用」而不是「最大值 +1」：反复增删隧道的部署下，后者会很快爬到上限，
 // 而前者会复用被删掉隧道的号。复用的代价是一条已删隧道的在途数据报可能
 // 命中新隧道 —— 所以复用前提是数据报里同时带 FlowID，
 // 而 FlowID 由会话表按需分配、旧会话不存在于新表中，在途包会被当作未知流丢弃。
-func (d *DB) allocShortID(ctx context.Context, tenantID string) (uint16, error) {
-	rows, err := d.read.QueryContext(ctx,
+func allocShortIDTx(ctx context.Context, tx *sql.Tx, tenantID string) (uint16, error) {
+	rows, err := tx.QueryContext(ctx,
 		`SELECT short_id FROM tunnels WHERE tenant_id = ? AND short_id != 0 ORDER BY short_id`,
 		tenantID)
 	if err != nil {

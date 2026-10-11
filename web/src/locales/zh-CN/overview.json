@@ -1,5 +1,10 @@
 {
   "title": "概览",
+  "desktop": {
+    "title": "从手机访问 Desktop",
+    "description": "先连接 Desktop，再在 Desktop 中创建手机设备邀请。接入检查和连接状态集中在这里。",
+    "action": "连接 Desktop"
+  },
   "tile": {
     "tunnels": "隧道 运行/停止",
     "agents": "代理端 在线",

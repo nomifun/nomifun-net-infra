@@ -13,6 +13,8 @@ import { keys } from './keys';
 import { stream, type StreamHealth } from './stream';
 import type {
   AgentStatus,
+  DesktopPreflight,
+  DesktopConnection,
   LearnedSources,
   RelayEvent,
   Sample,
@@ -71,6 +73,18 @@ export function useTunnelBySlug(slug: string | undefined): {
 
 export function useAgents(): SWRResponse<AgentStatus[], ApiError> {
   return useSWR<AgentStatus[], ApiError>(keys.agents, async () => (await api.listAgents()) ?? []);
+}
+
+export function useDesktopPreflight(): SWRResponse<DesktopPreflight, ApiError> {
+  return useSWR<DesktopPreflight, ApiError>(keys.desktopPreflight, api.desktopPreflight);
+}
+
+export function useDesktopConnections(): SWRResponse<DesktopConnection[], ApiError> {
+  return useSWR<DesktopConnection[], ApiError>(
+    keys.desktopConnections,
+    async () => (await api.desktopConnections()).connections ?? [],
+    { refreshInterval: 5_000 },
+  );
 }
 
 export function useRecentEvents(limit = 100): SWRResponse<{ events: RelayEvent[] }, ApiError> {

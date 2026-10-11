@@ -10,6 +10,7 @@
     "listeners": "监听器",
     "tls": "TLS / ACME",
     "auth": "鉴权",
+    "desktop": "Desktop 接入",
     "retention": "留存",
     "backup": "备份",
     "other": "其他"

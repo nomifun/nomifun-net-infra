@@ -1,15 +1,16 @@
 # 3. API 与服务间集成
 
-控制台前端是这套 API 的**唯一**消费者，没有隐藏接口。所以你能做的事与人在浏览器里
-能做的事完全一致。
+控制台前端消费管理员 API；Desktop 另外通过一次性邀请兑换接入，并用本连接专属
+bearer 凭据查询与撤销连接。二者的权限不同。Desktop 不需要保存中继管理员密码。
 
 ## 3.1 先说结论：可行，但代价要清楚
 
 服务间集成（你的程序驱动中继，不是人点浏览器）是可行的，三步就够。但先看代价：
 
-- **没有 API 令牌 / API key / mTLS。** 集成方持有的是**那把唯一的管理员口令**。
+- **通用管理员 API 没有 API key / mTLS 或角色分权。** 驱动任意管理员操作的集成方持有管理员口令。
   同一个会话还能 `POST /api/config:apply` 删掉全部隧道、下载含全量配置的支持包。
   没有角色、没有只读凭据、没有按端点分权。
+- **Desktop 专用接入是例外。** 短时中继邀请只授权接入；兑换后的控制凭据只授权该连接的 GET/DELETE，不能创建其他隧道或读取完整支持包。见 [Desktop 接入](10-desktop-connect.md)。
 - **会话 12 小时硬过期，没有滑动续期、没有 refresh 端点。** 你的程序必须每
   ≤12h 重登一次。
 - 登录端点有限速（见 3.5）。把「每次调用都重登」写进循环会撞上它。
@@ -204,7 +205,36 @@ IPv6 按 /64 归并。限速**排在解析请求体之前**，所以畸形请求
 
 **只读 `message`，不要用 `path` 做稳定的字段绑定。**
 
-## 3.7 事件流（SSE）
+## 3.7 Desktop 专用接入 API
+
+管理员端点沿用管理员 Cookie，会改变状态的 POST/DELETE 同时要求 CSRF 与 Origin：
+
+| 方法与路径 | 用途 |
+|---|---|
+| `GET /api/desktop/preflight` | v2 部署配置预检；不证明公网可达 |
+| `POST /api/pairing-invites/v2` | 创建短时一次性邀请，逐台绑定公开业务地址 |
+| `GET /api/desktop-connections` | 列出 Desktop 连接状态 |
+| `GET /api/desktop-connections/{id}` | 查看单连接 |
+| `DELETE /api/desktop-connections/{id}` | 撤销该连接及其业务入口 |
+
+Desktop 使用专用 bearer 凭据调用：
+
+| 方法与路径 | 凭据与边界 |
+|---|---|
+| `POST /api/bootstrap/desktop/v2` | 一次性邀请，JSON 体内包含持久保存的随机 `attempt_id` |
+| `POST /api/bootstrap/desktop/v2:cancel` | 原邀请与原 `attempt_id`，取消尚未完成或结果未知的配对尝试；已兑换时必须匹配保存的尝试标识 |
+| `GET /api/desktop-connections/{id}` | 兑换得到的本连接 `control_token` |
+| `DELETE /api/desktop-connections/{id}` | 同一控制凭据，仅能撤销它所属的连接 |
+
+`POST /api/pairing-invites` 与 `POST /api/bootstrap/desktop` 保留 v1 兼容；v1 固定
+后端 `127.0.0.1:25808`，v2 固定专属回环后端 `127.0.0.1:25811`。
+生成配对串必须使用服务端返回的 `bootstrap_url`，不能用当前管理浏览器 origin。
+完整字段、重试语义、状态与 HTTPS 反代路径见 [第 10 章](10-desktop-connect.md)。
+取消不受入网凭据到期限制，未兑换且已到期的邀请也可取消；重复取消成功返回已撤销的
+连接对象。Desktop 必须确认服务端撤销成功后再删除本地 pending 记录与原凭据。
+实现见 `internal/console/routes.go:64` 与 `internal/console/desktop_connections.go:13`。
+
+## 3.8 事件流（SSE）
 
 `GET /api/events`。事件种类是**稳定标识**，会进数据库、SSE 与控制台筛选器。
 全集见 `internal/store/metrics.go` 的 `Kind*` 常量与 `web/src/api/types.ts` 的

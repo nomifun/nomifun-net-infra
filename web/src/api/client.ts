@@ -28,6 +28,8 @@ import type {
   ConfigApplyResult,
   ConfigDiff,
   DesktopPairingInvite,
+  DesktopPreflight,
+  DesktopConnection,
   EnrolToken,
   LearnedSources,
   ProbeResult,
@@ -248,6 +250,18 @@ export const api = {
       listen_port: listenPort,
       note,
     }),
+
+  desktopPreflight: () => get<DesktopPreflight>('/api/desktop/preflight'),
+  createDesktopPairingInviteV2: (ttlSeconds: number, note: string, businessURL: string) =>
+    post<DesktopPairingInvite>('/api/pairing-invites/v2', {
+      ttl_seconds: ttlSeconds,
+      note,
+      business_url: businessURL,
+    }),
+  desktopConnections: () =>
+    get<{ connections: DesktopConnection[] }>('/api/desktop-connections'),
+  revokeDesktopConnection: (id: string) =>
+    del<DesktopConnection>(`/api/desktop-connections/${encodeURIComponent(id)}`),
 
   /** 注意：查询参数是 `since`（不是 since_id），返回裸数组。 */
   recentEvents: (limit = 100, since = 0) =>

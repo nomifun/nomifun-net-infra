@@ -1,8 +1,5 @@
 import {
-  Alert,
   Button,
-  Input,
-  InputNumber,
   Message,
   Modal,
   Space,
@@ -13,126 +10,17 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 import { ApiError, api } from '@/api/client';
-import { useAgents, useStreamHealth } from '@/api/hooks';
+import { useAgents, useApiMutate, useStreamHealth } from '@/api/hooks';
 import { keys } from '@/api/keys';
-import { useApiMutate } from '@/api/hooks';
-import type { AgentStatus, DesktopPairingInvite, EnrolToken } from '@/api/types';
+import type { AgentStatus, EnrolToken } from '@/api/types';
 import CopyBlock from '@/components/CopyBlock';
 import EmptyAction from '@/components/EmptyAction';
 import TypeToConfirm from '@/components/TypeToConfirm';
 import { relativeTime } from '@/utils/format';
 import { externallyReachable } from '@/utils/reachable';
-
-const DEFAULT_DESKTOP_LISTEN_PORT = 25808;
-const DEFAULT_PAIRING_TTL_SECONDS = 600;
-
-export function encodeDesktopPairingString(
-  invite: DesktopPairingInvite,
-  origin: string,
-): string {
-  const payload = JSON.stringify({
-    bootstrap_url: `${origin}/api/bootstrap/desktop`,
-    invite: invite.token,
-    expires_at: invite.expires_at,
-  });
-  const bytes = new TextEncoder().encode(payload);
-  let binary = '';
-  for (const byte of bytes) binary += String.fromCharCode(byte);
-  const encoded = btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  return `nomifun-relay-pair:v1:${encoded}`;
-}
-
-function formatPairingExpiry(expiresAt: string): string {
-  const date = new Date(expiresAt);
-  return Number.isNaN(date.getTime()) ? expiresAt : date.toLocaleString();
-}
-
-function PairingInvitePanel(): React.JSX.Element {
-  const { t } = useTranslation(['agents', 'common']);
-  const [visible, setVisible] = useState(false);
-  const [ttlSeconds, setTtlSeconds] = useState(DEFAULT_PAIRING_TTL_SECONDS);
-  const [listenPort, setListenPort] = useState(DEFAULT_DESKTOP_LISTEN_PORT);
-  const [note, setNote] = useState('');
-  const [invite, setInvite] = useState<DesktopPairingInvite | null>(null);
-  const [error, setError] = useState('');
-  const [busy, setBusy] = useState(false);
-
-  const create = (): void => {
-    setBusy(true);
-    setError('');
-    void api
-      .createDesktopPairingInvite(ttlSeconds, listenPort, note)
-      .then(setInvite)
-      .catch((err: unknown) => {
-        setError(err instanceof ApiError ? err.message : t('pairing.error'));
-      })
-      .finally(() => setBusy(false));
-  };
-
-  const pairingString =
-    invite === null ? null : encodeDesktopPairingString(invite, window.location.origin);
-
-  return (
-    <>
-      <Button type="secondary" onClick={() => setVisible(true)}>
-        {t('pairing.action')}
-      </Button>
-      <Modal
-        visible={visible}
-        title={t('pairing.title')}
-        confirmLoading={busy}
-        okText={t('pairing.create')}
-        cancelText={t('common:action.cancel')}
-        onOk={create}
-        onCancel={() => {
-          if (!busy) setVisible(false);
-        }}
-      >
-        <div className="flex flex-col gap-12px">
-          {error ? <Alert type="error" content={error} /> : null}
-          <label className="flex flex-col gap-4px">
-            <span className="text-13px">{t('pairing.ttl')}</span>
-            <InputNumber
-              min={1}
-              max={86_400}
-              value={ttlSeconds}
-              onChange={(value) => setTtlSeconds(value ?? DEFAULT_PAIRING_TTL_SECONDS)}
-            />
-          </label>
-          <label className="flex flex-col gap-4px">
-            <span className="text-13px">{t('pairing.listenPort')}</span>
-            <InputNumber
-              min={1}
-              max={65_535}
-              value={listenPort}
-              onChange={(value) => setListenPort(value ?? DEFAULT_DESKTOP_LISTEN_PORT)}
-            />
-          </label>
-          <label className="flex flex-col gap-4px">
-            <span className="text-13px">{t('pairing.note')}</span>
-            <Input value={note} onChange={setNote} maxLength={200} />
-          </label>
-          {invite && pairingString ? (
-            <div className="flex flex-col gap-10px">
-              <div className="muted-note">
-                {t('pairing.expires', { time: formatPairingExpiry(invite.expires_at) })}
-              </div>
-              <CopyBlock text={pairingString} label={t('pairing.string')} />
-              <div className="flex flex-col items-start gap-4px">
-                <span className="text-12px text-3">{t('pairing.qr')}</span>
-                <div className="bg-white p-8px">
-                  <QRCodeSVG value={pairingString} size={192} />
-                </div>
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </Modal>
-    </>
-  );
-}
 
 /** 入网命令面板。空态直接把它内联出来（空态 = 一个主操作）。 */
 export function InstallPanel({ token }: { token: EnrolToken }): React.JSX.Element {
@@ -180,6 +68,7 @@ export function InstallPanel({ token }: { token: EnrolToken }): React.JSX.Elemen
 
 export default function Agents(): React.JSX.Element {
   const { t } = useTranslation(['agents', 'common', 'errors']);
+  const navigate = useNavigate();
   useStreamHealth();
   const { data: agents, isLoading } = useAgents();
   const apiMutate = useApiMutate();
@@ -250,7 +139,9 @@ export default function Agents(): React.JSX.Element {
           {token ? <InstallPanel token={token} /> : null}
         </EmptyAction>
         <div className="flex justify-center">
-          <PairingInvitePanel />
+          <Button type="secondary" onClick={() => void navigate('/desktop-connect')}>
+            {t('pairing.action')}
+          </Button>
         </div>
       </>
     );
@@ -266,7 +157,9 @@ export default function Agents(): React.JSX.Element {
         <Button type="primary" loading={busy} onClick={() => issue('console')}>
           {t('agents:empty.action')}
         </Button>
-        <PairingInvitePanel />
+        <Button type="secondary" onClick={() => void navigate('/desktop-connect')}>
+          {t('pairing.action')}
+        </Button>
       </div>
 
       <Table

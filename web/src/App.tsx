@@ -7,6 +7,7 @@ import { useIdentity, useSetupState } from './api/hooks';
 import AppLayout from './components/AppLayout';
 import Agents from './pages/Agents';
 import Diagnostics from './pages/Diagnostics';
+import DesktopConnect from './pages/DesktopConnect';
 import Login from './pages/Login';
 import MediaRelay from './pages/MediaRelay';
 import Overview from './pages/Overview';
@@ -104,6 +105,7 @@ export default function App(): React.JSX.Element {
         <Route path="/tunnels/:slug" element={<TunnelDetail />} />
         <Route path="/tunnels/:slug/edit" element={<TunnelWizard />} />
         <Route path="/agents" element={<Agents />} />
+        <Route path="/desktop-connect" element={<DesktopConnect />} />
         <Route path="/media" element={<MediaRelay />} />
         <Route path="/diagnostics" element={<Diagnostics />} />
         <Route path="/settings" element={<Settings />} />

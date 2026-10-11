@@ -1,0 +1,60 @@
+# Standalone production profile; do not merge this with docker-compose.yml.
+# See docs/integration/10-desktop-connect.md for DNS, ports, and verification.
+services:
+  nfrelay:
+    build:
+      context: .
+      args:
+        VERSION: ${VERSION:-dev}
+        COMMIT: ${COMMIT:-none}
+    image: nomifun/nfrelay:${VERSION:-dev}
+    restart: unless-stopped
+    ports:
+      - "8443:8443/udp"
+      - "443:443/tcp"
+      - "127.0.0.1:9443:9443/tcp"
+    volumes:
+      - desktop-relay-data:/data
+    command:
+      - -data-dir=/data
+      - -bind=0.0.0.0:8443
+      - -advertise=${RELAY_HOST:?Set RELAY_HOST to the public relay hostname}:8443
+      - -console=0.0.0.0:9443
+      - -console-hosts=${RELAY_HOST:?Set RELAY_HOST}
+      - -desktop-bootstrap-url=https://${RELAY_HOST:?Set RELAY_HOST}:9444/api/bootstrap/desktop/v2
+      - -desktop-business-url=${DESKTOP_PUBLIC_URL:-}
+      - -shared=0.0.0.0:443
+      - -acme
+      - -acme-email=${ACME_EMAIL:?Set ACME_EMAIL to a real operations email address}
+      - -acme-ca=https://acme-v02.api.letsencrypt.org/directory
+      - -log-level=info
+    stop_grace_period: 40s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+
+  desktop-bootstrap:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on:
+      - nfrelay
+    ports:
+      - "80:80/tcp"
+      - "9444:9444/tcp"
+    environment:
+      RELAY_HOST: ${RELAY_HOST:?Set RELAY_HOST}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL}
+    volumes:
+      - ./deploy/Caddyfile.desktop-bootstrap:/etc/caddy/Caddyfile:ro
+      - desktop-bootstrap-data:/data
+      - desktop-bootstrap-config:/config
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  desktop-relay-data:
+  desktop-bootstrap-data:
+  desktop-bootstrap-config:

@@ -14,8 +14,9 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const LOCALES = new URL('../src/locales/', import.meta.url).pathname;
+const LOCALES = fileURLToPath(new URL('../src/locales/', import.meta.url));
 
 /** 禁语：出现即失败。 */
 const FORBIDDEN = [

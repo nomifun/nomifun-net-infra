@@ -523,6 +523,28 @@ export interface DesktopPairingInvite {
   pin: string;
   listen_port: number;
   expires_at: string;
+  bootstrap_url: string;
+  protocol_version?: 1 | 2;
+  business_url?: string;
+}
+
+export interface DesktopPreflight {
+  protocol_version: 2;
+  bootstrap_url: string;
+  default_business_url: string;
+  ready: boolean;
+  checks: { code: string; ok: boolean; message: string }[];
+}
+
+export interface DesktopConnection {
+  invite_id: string;
+  note: string;
+  business_url: string;
+  tunnel_id: string;
+  agent_id: string;
+  state: string;
+  reason: string;
+  revoked: boolean;
 }
 
 /** 逐跳探测结果。「不通」没用，「哪一跳不通」才有用。 */

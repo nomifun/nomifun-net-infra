@@ -10,8 +10,9 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('../src/locales/', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('../src/locales/', import.meta.url));
 const SOURCE = 'zh-CN';
 const TARGETS = ['en-US'];
 

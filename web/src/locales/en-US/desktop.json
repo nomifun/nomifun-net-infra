@@ -1,0 +1,59 @@
+{
+  "title": "Connect Desktop",
+  "description": "Connect Desktop to this relay, then open Connections & Devices in Desktop to connect your phone. Phones use a Desktop device invite, not the relay pairing code on this page.",
+  "check": {
+    "bootstrap_url": "Configure the public bootstrap address for this relay (-desktop-bootstrap-url). The console browser address is never used automatically.",
+    "carrier_address": "Use -advertise to set a host:port the network agent can reach. Production addresses must not use a container subnet or loopback.",
+    "shared_https": "Enable the shared HTTPS endpoint (-shared) and production ACME. Configuration checks do not prove certificate issuance, DNS, or public connectivity.",
+    "dev_mode": "Local HTTP test mode was explicitly enabled. Results do not establish public TLS, DNS, or phone acceptance."
+  },
+  "preflight": {
+    "title": "1. Check relay deployment",
+    "ready": "The deployment configuration meets the connection requirements. Desktop must still come online, and phone access must be verified.",
+    "blocked": "The relay deployment is not ready. Ask the administrator to resolve the checks below before creating an invite.",
+    "addresses": "The console management address, Desktop bootstrap address, and public phone access address serve different purposes. Managing the relay through localhost or an SSH tunnel does not change the bootstrap address below.",
+    "bootstrap": "Desktop bootstrap address (configured by the relay)",
+    "ok": "Configured",
+    "fix": "Action needed",
+    "retry": "Check again"
+  },
+  "invite": {
+    "title": "2. Create a Desktop invite",
+    "name": "Desktop name",
+    "namePlaceholder": "For example: Home computer, Workstation",
+    "businessURL": "Public access address",
+    "businessHint": "In production, enter a dedicated HTTPS domain for this Desktop and point its DNS to the relay. Each Desktop needs a different domain. Explicit local development mode permits an empty value to allocate a local HTTP address automatically.",
+    "advanced": "Advanced settings",
+    "ttl": "Invite lifetime (seconds)",
+    "create": "Generate one-time pairing code",
+    "next": "On the Desktop you want to connect, open Connections & Devices, choose Connect relay, and paste this code. Then create a phone device invite in Desktop.",
+    "string": "Relay pairing code (for Desktop)",
+    "expires": "Expires {{time}}. Redeemable once; share only with a trusted Desktop.",
+    "qrHint": "This QR code contains the same relay pairing code. It connects Desktop to the relay. Phones should use a device invite generated in Desktop.",
+    "hide": "Hide pairing code"
+  },
+  "connections": {
+    "title": "3. View Desktop connections",
+    "evidence": "These states are reported by the relay. Transport ready means the network agent and tunnel are established. Verify phone authentication and HTTP / WebSocket access in Desktop and on the phone.",
+    "empty": "No Desktop invites yet. Complete the deployment checks and generate your first pairing code.",
+    "state": "Connection state"
+  },
+  "state": {
+    "waiting": "Waiting for Desktop to redeem the invite",
+    "expired": "Invite expired; create a new one",
+    "pending": "Waiting for the network agent",
+    "transport_ready": "Transport ready; verify phone access",
+    "error": "Connection failed; resolve the reported cause",
+    "revoked": "Disconnected"
+  },
+  "revoke": {
+    "action": "Disconnect",
+    "title": "Disconnect Desktop",
+    "warning": "Disconnecting “{{name}}” revokes its relay invite and network agent, and closes its public access endpoint. Manage trusted phone devices separately in Desktop.",
+    "done": "Desktop disconnected from the relay"
+  },
+  "errors": {
+    "upgrade": "This relay does not support the new Desktop connection flow. Upgrade the relay, then refresh this page.",
+    "contract": "The relay returned an incomplete connection contract. Upgrade it and check its public bootstrap address configuration."
+  }
+}

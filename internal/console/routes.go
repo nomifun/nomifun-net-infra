@@ -66,6 +66,13 @@ func (s *Server) routes() {
 	// Desktop bootstrap intentionally is not behind the administrator session:
 	// the one-time invite is the only credential for this narrow operation.
 	m.HandleFunc("POST /api/bootstrap/desktop", s.handleBootstrapDesktop)
+	m.HandleFunc("GET /api/desktop/preflight", s.requireAuth(s.handleDesktopPreflight))
+	m.HandleFunc("POST /api/pairing-invites/v2", s.requireAuth(s.handleCreateDesktopInviteV2))
+	m.HandleFunc("POST /api/bootstrap/desktop/v2", s.handleBootstrapDesktopV2)
+	m.HandleFunc("POST /api/bootstrap/desktop/v2:cancel", s.handleCancelDesktopBootstrap)
+	m.HandleFunc("GET /api/desktop-connections", s.requireAuth(s.handleListDesktopConnections))
+	m.HandleFunc("GET /api/desktop-connections/{id}", s.handleDesktopConnection)
+	m.HandleFunc("DELETE /api/desktop-connections/{id}", s.handleDesktopConnection)
 
 	// 声明式整份配置。两个端点而不是一个带 dry_run 标志的端点：
 	// 「先看看会发生什么」与「去做」是两个动作，而 apply 能删隧道。

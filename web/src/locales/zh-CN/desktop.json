@@ -1,0 +1,59 @@
+{
+  "title": "连接 Desktop",
+  "description": "先把 Desktop 接入中继，再到 Desktop 的「连接与设备」连接手机。手机使用 Desktop 的设备邀请，不使用这里的中继配对码。",
+  "check": {
+    "bootstrap_url": "设置指向本中继的公共配对地址（-desktop-bootstrap-url）。控制台浏览器地址不会自动成为配对地址。",
+    "carrier_address": "用 -advertise 明确设置网络代理端能到达的 host:port。公网环境不能填写容器网段或本机回环地址。",
+    "shared_https": "生产环境启用共享 HTTPS 入口（-shared）与生产 ACME。配置检查不证明证书已签发、DNS 或公网连接已通过。",
+    "dev_mode": "已显式启用本机 HTTP 测试模式。测试结果不代表公网 TLS、DNS 或手机验收。"
+  },
+  "preflight": {
+    "title": "1. 检查中继部署",
+    "ready": "部署配置满足接入条件。生成邀请后仍需 Desktop 上线，并验证手机访问。",
+    "blocked": "中继部署尚未就绪。请管理员处理下面的问题，再生成邀请。",
+    "addresses": "控制台管理地址、Desktop 兑换邀请的接入地址、手机公开访问地址承担不同用途。通过 localhost 或 SSH 隧道管理中继，不会改变下方接入地址。",
+    "bootstrap": "Desktop 接入地址（由中继配置）",
+    "ok": "已配置",
+    "fix": "需处理",
+    "retry": "重新检查"
+  },
+  "invite": {
+    "title": "2. 创建 Desktop 邀请",
+    "name": "Desktop 名称",
+    "namePlaceholder": "例如：家里的电脑、工作站",
+    "businessURL": "公开访问地址",
+    "businessHint": "生产环境填写这台 Desktop 独立的 HTTPS 域名，并将 DNS 指向中继。多台 Desktop 使用不同域名。明确启用本机开发模式时，可留空自动分配本机 HTTP 地址。",
+    "advanced": "高级设置",
+    "ttl": "邀请有效期（秒）",
+    "create": "生成一次性配对码",
+    "next": "在要连接的 Desktop 中打开「连接与设备」，选择连接中继，然后粘贴配对码。完成后在 Desktop 创建手机设备邀请。",
+    "string": "中继配对码（交给 Desktop）",
+    "expires": "有效至 {{time}}。仅能兑换一次，请仅交给受信任的 Desktop。",
+    "qrHint": "二维码内容与配对码相同。此码用于 Desktop 接入中继，手机应使用 Desktop 生成的设备邀请。",
+    "hide": "隐藏配对码"
+  },
+  "connections": {
+    "title": "3. 查看 Desktop 连接",
+    "evidence": "下方状态来自中继。传输就绪表示代理端与隧道已建立；手机认证、HTTP / WebSocket 业务是否可用，请继续在 Desktop 和手机中验证。",
+    "empty": "还没有 Desktop 邀请。完成部署检查后生成第一个配对码。",
+    "state": "连接状态"
+  },
+  "state": {
+    "waiting": "等待 Desktop 兑换邀请",
+    "expired": "邀请已过期，请重新生成",
+    "pending": "等待网络代理端上线",
+    "transport_ready": "传输就绪，待验证手机访问",
+    "error": "连接异常，请根据原因处理",
+    "revoked": "已解除连接"
+  },
+  "revoke": {
+    "action": "解除连接",
+    "title": "解除 Desktop 连接",
+    "warning": "解除「{{name}}」将撤销中继邀请及其网络代理端，并关闭对应业务入口。Desktop 上的手机设备信任需在 Desktop 中另外管理。",
+    "done": "已解除 Desktop 的中继连接"
+  },
+  "errors": {
+    "upgrade": "当前中继不支持新版 Desktop 接入。请先升级中继，然后刷新页面。",
+    "contract": "中继返回的接入契约不完整，请升级并检查公共接入地址配置。"
+  }
+}

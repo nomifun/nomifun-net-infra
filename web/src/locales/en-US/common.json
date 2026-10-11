@@ -5,6 +5,7 @@
   },
   "nav": {
     "overview": "Overview",
+    "desktopConnect": "Connect Desktop",
     "tunnels": "Tunnels",
     "agents": "Agents",
     "media": "Media relay",

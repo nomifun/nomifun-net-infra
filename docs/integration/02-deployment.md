@@ -2,6 +2,11 @@
 
 ## 2.1 端口
 
+Desktop 生产接入可直接使用独立的
+[`docker-compose.desktop-https.yml`](../../docker-compose.desktop-https.yml)。它在下面
+通用端口之外增加 TCP `9444` 的公开 HTTPS bootstrap，并把 TCP `80` 交给 Caddy
+签发 bootstrap 域名证书；完整前提见 [第 10 章](10-desktop-connect.md)。
+
 | 端口 | 协议 | 谁连 | 必需？ |
 |---|---|---|---|
 | `8443` | **UDP**（QUIC） | agent 连中继 | 必需（`-bind`） |

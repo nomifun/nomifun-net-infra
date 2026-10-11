@@ -234,7 +234,7 @@ func NewEntryListener(
 		return nil, errors.New("relay: UDP 入口请用 EntryDatagramListener")
 	}
 
-	ln, err := net.Listen(network, addr)
+	ln, err := listenEntry(network, addr)
 	if err != nil {
 		return nil, fmt.Errorf("relay: 隧道 %s 监听 %s 失败：%w", t.Slug, addr, err)
 	}

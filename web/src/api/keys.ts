@@ -13,6 +13,8 @@ export const keys = {
   samples: (id: string, from: number) => `/api/tunnels/${id}/samples?from=${from}`,
   learned: (id: string) => `/api/tunnels/${id}/learned-sources`,
   agents: '/api/agents',
+  desktopPreflight: '/api/desktop/preflight',
+  desktopConnections: '/api/desktop-connections',
   recentEvents: '/api/events/recent',
   settings: '/api/settings',
   turn: '/api/turn/allocations',

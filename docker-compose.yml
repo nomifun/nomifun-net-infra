@@ -3,6 +3,10 @@
 #   docker compose up -d
 #   docker compose logs -f nfrelay     # 首启信息（控制台地址、证书指纹）在这里
 #
+# 此默认配置不开放 Desktop 的公网业务入口或 bootstrap HTTPS。
+# Desktop 生产接入使用独立的 docker-compose.desktop-https.yml，见
+# docs/integration/10-desktop-connect.md；不要把两份配置合并启动。
+#
 # 控制台默认只绑 127.0.0.1，需要远程访问时**不要**直接改成 0.0.0.0 ——
 # 正确做法是放在一个做了 TLS 与鉴权的反代之后，并把公网主机名加进
 # -console-hosts（那是 DNS 重绑定防护要求的）。

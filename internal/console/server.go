@@ -157,12 +157,15 @@ type DesktopBootstrapResponse struct {
 //
 // Token 只出现在该响应中；数据库只保存 hash，日志与事件不得包含它。
 type DesktopPairingInviteResponse struct {
-	ID         string    `json:"id"`
-	Token      string    `json:"token"`
-	Relay      string    `json:"relay"`
-	Pin        string    `json:"pin"`
-	ListenPort uint16    `json:"listen_port"`
-	ExpiresAt  time.Time `json:"expires_at"`
+	ID              string    `json:"id"`
+	Token           string    `json:"token"`
+	Relay           string    `json:"relay"`
+	Pin             string    `json:"pin"`
+	ListenPort      uint16    `json:"listen_port"`
+	ExpiresAt       time.Time `json:"expires_at"`
+	ProtocolVersion int       `json:"protocol_version,omitempty"`
+	BootstrapURL    string    `json:"bootstrap_url,omitempty"`
+	BusinessURL     string    `json:"business_url,omitempty"`
 }
 
 // AgentKicker 让控制台把代理端踢下线。
@@ -990,6 +993,14 @@ func writeError(w http.ResponseWriter, status int, code, msg string) {
 // （client/http/controller.go:53-68），这是它少数值得直接抄的设计。
 func statusFor(err error) (int, string) {
 	switch {
+	case errors.Is(err, ErrDesktopPrecondition):
+		return http.StatusConflict, "precondition_failed"
+	case errors.Is(err, store.ErrPairingInviteVersionMismatch):
+		return http.StatusConflict, "pairing_version_mismatch"
+	case errors.Is(err, store.ErrDesktopConnectionRevoked):
+		return http.StatusGone, "connection_revoked"
+	case errors.Is(err, store.ErrDesktopEnrolExpired):
+		return http.StatusGone, "enrol_expired"
 	case errors.Is(err, store.ErrNotFound):
 		return http.StatusNotFound, "not_found"
 	case errors.Is(err, store.ErrConflict):

@@ -42,11 +42,13 @@ type runtime struct {
 
 	// desktopBusinessURL 是最终交给 Mobile 的稳定 HTTP(S) 业务入口。
 	//
-	// 留空时保持旧行为：按 advertised carrier host + 隧道端口生成裸 HTTP
-	// 地址。配置后它可以是前置 Caddy/Nginx 的 HTTPS 域名；Desktop 就绪
-	// 探测仍然走下面单独生成的裸端口 ProbeURL，避免公网 DNS/TLS 还没就绪
-	// 时误判 nfagent 没上线。
-	desktopBusinessURL string
+	// v1 保留裸端口探测；v2 每个邀请绑定自己的共享 HTTPS 业务地址，
+	// 该值只作为控制台的建议值。v2 的就绪探测使用真正的业务入口。
+	desktopBusinessURL  string
+	desktopBootstrapURL string
+	desktopDevInsecure  bool
+	desktopEnrolTTL     time.Duration
+	desktopInviteMu     sync.Mutex
 
 	// consoleHardened 记录控制台是否按「前置 TLS 反代」加固。
 	//
@@ -179,26 +181,27 @@ func (rt *runtime) noteStreamDenied(tunnelID, code, message string) {
 
 func newRuntime(ctx context.Context, db *store.DB, log *slog.Logger, version, bindAddr, pin string) *runtime {
 	return &runtime{
-		db:           db,
-		log:          log,
-		version:      version,
-		startedAt:    time.Now(),
-		bindAddr:     bindAddr,
-		pin:          pin,
-		sessions:     relay.NewSessionManager(log),
-		guard:        proto.NewReplayGuard(0, 0),
-		tunnels:      make(map[string]*tunnel.Tunnel),
-		byPort:       make(map[uint16]*tunnel.Tunnel),
-		entries:      make(map[string]*relay.EntryListener),
-		dgrams:       make(map[string]*relay.DatagramEntry),
-		dgramRouter:  relay.NewDatagramRouter(log),
-		rejections:   make(map[string]string),
-		routeErrors:  make(map[string]string),
-		entryErrors:  make(map[string]string),
-		agentMetrics: make(map[string]agentMetricSample),
-		deniedSeen:   make(map[string]time.Time),
-		observed:     newObservedSources(),
-		ctx:          ctx,
+		db:              db,
+		log:             log,
+		version:         version,
+		startedAt:       time.Now(),
+		bindAddr:        bindAddr,
+		pin:             pin,
+		desktopEnrolTTL: console.DefaultEnrolTTL,
+		sessions:        relay.NewSessionManager(log),
+		guard:           proto.NewReplayGuard(0, 0),
+		tunnels:         make(map[string]*tunnel.Tunnel),
+		byPort:          make(map[uint16]*tunnel.Tunnel),
+		entries:         make(map[string]*relay.EntryListener),
+		dgrams:          make(map[string]*relay.DatagramEntry),
+		dgramRouter:     relay.NewDatagramRouter(log),
+		rejections:      make(map[string]string),
+		routeErrors:     make(map[string]string),
+		entryErrors:     make(map[string]string),
+		agentMetrics:    make(map[string]agentMetricSample),
+		deniedSeen:      make(map[string]time.Time),
+		observed:        newObservedSources(),
+		ctx:             ctx,
 	}
 }
 
@@ -521,6 +524,9 @@ func (rt *runtime) IssueEnrolToken(ttl time.Duration, note string) (string, stri
 func (rt *runtime) CreateDesktopPairingInvite(
 	ctx context.Context, ttl time.Duration, listenPort uint16, note string,
 ) (console.DesktopPairingInviteResponse, error) {
+	if rt.desktopBootstrapURL == "" {
+		return console.DesktopPairingInviteResponse{}, fmt.Errorf("%w：请配置 -desktop-bootstrap-url；管理浏览器地址不能用作 Desktop 配对地址", console.ErrDesktopPrecondition)
+	}
 	backend := tunnel.Backend{
 		Kind: tunnel.BackendAddr,
 		Addr: console.DesktopBackendAddr,
@@ -540,12 +546,13 @@ func (rt *runtime) CreateDesktopPairingInvite(
 		return console.DesktopPairingInviteResponse{}, err
 	}
 	return console.DesktopPairingInviteResponse{
-		ID:         invite.ID,
-		Token:      token,
-		Relay:      rt.bindAddr,
-		Pin:        rt.pin,
-		ListenPort: listenPort,
-		ExpiresAt:  invite.ExpiresAt,
+		ID:           invite.ID,
+		Token:        token,
+		Relay:        rt.bindAddr,
+		Pin:          rt.pin,
+		ListenPort:   listenPort,
+		ExpiresAt:    invite.ExpiresAt,
+		BootstrapURL: strings.TrimSuffix(rt.desktopBootstrapURL, "/v2"),
 	}, nil
 }
 

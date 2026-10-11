@@ -20,8 +20,9 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const SRC = new URL('../src/', import.meta.url).pathname;
+const SRC = fileURLToPath(new URL('../src/', import.meta.url));
 const CJK = /[一-鿿㐀-䶿＀-￯　-〿]/;
 
 function walk(dir) {

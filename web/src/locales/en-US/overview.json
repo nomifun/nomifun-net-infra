@@ -1,5 +1,10 @@
 {
   "title": "Overview",
+  "desktop": {
+    "title": "Access Desktop from your phone",
+    "description": "Connect Desktop, then create a phone device invite in Desktop. Start with deployment checks and view connection status here.",
+    "action": "Connect Desktop"
+  },
   "tile": {
     "tunnels": "Tunnels up/down",
     "agents": "Agents online",

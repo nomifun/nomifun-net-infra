@@ -15,6 +15,7 @@ interface Props {
 
 const NAV = [
   { to: '/', key: 'overview' },
+  { to: '/desktop-connect', key: 'desktopConnect' },
   { to: '/tunnels', key: 'tunnels' },
   { to: '/agents', key: 'agents' },
   { to: '/media', key: 'media' },
@@ -128,12 +129,12 @@ export default function AppLayout({ username, onLogout, children }: Props): Reac
 
   return (
     <div className="min-h-100vh flex flex-col">
-      <header className="flex items-center gap-16px border-b border-line-2 bg-2 px-20px py-10px">
+      <header className="flex flex-wrap items-center gap-16px border-b border-line-2 bg-2 px-20px py-10px">
         <div className="flex items-baseline gap-8px">
           <span className="text-16px font-semibold">{t('app.name')}</span>
           <span className="text-12px text-3">{t('app.subtitle')}</span>
         </div>
-        <nav className="flex flex-1 items-center gap-4px">
+        <nav className="min-w-0 flex flex-1 flex-wrap items-center gap-4px">
           {NAV.map((item) => (
             <NavLink
               key={item.key}

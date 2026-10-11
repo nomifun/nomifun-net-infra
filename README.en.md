@@ -11,6 +11,7 @@ Installation, cross-network setup, Mobile configuration, screenshots, and user t
 - Integration index: [`docs/integration/`](docs/integration/)
 - API and wire protocol: [`docs/integration/03-api.md`](docs/integration/03-api.md), [`docs/integration/08-wire-protocol.md`](docs/integration/08-wire-protocol.md)
 - Deployment and ports: [`docs/integration/02-deployment.md`](docs/integration/02-deployment.md)
+- Desktop connection and phone access: [`docs/integration/10-desktop-connect.md`](docs/integration/10-desktop-connect.md), including the standalone production profile [`docker-compose.desktop-https.yml`](docker-compose.desktop-https.yml)
 - Operations and security: [`docs/integration/07-operations.md`](docs/integration/07-operations.md), [`docs/research/12-security-ops.md`](docs/research/12-security-ops.md)
 - Development checks: follow `Makefile`, `AGENTS.md`, and current Go source
 

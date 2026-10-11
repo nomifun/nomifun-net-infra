@@ -5,6 +5,7 @@
   },
   "nav": {
     "overview": "概览",
+    "desktopConnect": "连接 Desktop",
     "tunnels": "隧道",
     "agents": "代理端",
     "media": "媒体中继",

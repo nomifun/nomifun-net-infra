@@ -10,6 +10,7 @@
     "listeners": "Listeners",
     "tls": "TLS / ACME",
     "auth": "Auth",
+    "desktop": "Desktop access",
     "retention": "Retention",
     "backup": "Backup",
     "other": "Other"
